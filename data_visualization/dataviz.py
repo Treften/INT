@@ -101,10 +101,12 @@ def draw(points2D, targets, sawe=False):
 def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     print("run_tsne")
     if pca_dim > 0:
+        print("pca")
         feat = PCA(n_components=pca_dim).fit_transform(feat)
-
+    print("dist")
     distances2 = pairwise_distances(feat, metric="euclidean", squared=True)
     # This return a n x (n-1) prob array
+    print("pij")
     pij = manifold._t_sne._joint_probabilities(distances2, 30, False)
     # Convert to n x n prob array
     pij = squareform(pij)
