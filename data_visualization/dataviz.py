@@ -147,6 +147,6 @@ if __name__ == "__main__":
 
     # get features
     feat, targets = calc_features(data, draw=False)
-
+    print("tsne")
     # run t-SNE
     run_tsne(feat, targets, pca_dim=0)
