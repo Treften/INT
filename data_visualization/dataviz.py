@@ -74,7 +74,7 @@ def calc_features(data, draw: bool = False):
 
             features = (landmarks - lm_ref) / (face_width + 1e-8)
 
-            #feat.append(features.flatten())
+            feat.append(features.flatten())
 
             if draw:
                 img = cv2.cv.LoadImage(sample.img_rel_path)
