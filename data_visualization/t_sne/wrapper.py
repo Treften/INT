@@ -1,5 +1,6 @@
 import random
 import torch
+import numpy as np
 from torch.autograd import Variable
 
 
@@ -31,13 +32,21 @@ class Wrapper:
         self.model.train()
         if self.cuda:
             self.model.cuda()
+        pij = np.asarray(args[0], dtype=np.float32)
+        i = np.asarray(args[1], dtype=np.int64)
+        j = np.asarray(args[2], dtype=np.int64)
+
+        if not (len(pij) == len(i) == len(j)):
+            raise ValueError(
+                "pij, i and j must have the same length"
+            )
         for epoch in range(self.epochs):
             total = 0.0
             for itr, datas in enumerate(chunks(self.batchsize, *args)):
                 datas = [Variable(torch.from_numpy(data)) for data in datas]
                 if self.cuda:
                     datas = [data.cuda() for data in datas]
-
+                    pij_batch, i_batch, j_batch = datas
                     # TODO: вычислите логиты модели и градиенты от datas
                     # datas = [pij, i, j]
                     # pij - значения сходства между точками данных
