@@ -116,6 +116,7 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     i, j, pij = i[idx], j[idx], pij[idx]
 
     model = torchTSNE(n_points=feat.shape[0], n_dim=tsne_dim)
+    print("wrapper")
     w = Wrapper(model, cuda=True, batchsize=feat.shape[0], epochs=5)
     for itr in range(15):
         w.fit(pij, i, j)

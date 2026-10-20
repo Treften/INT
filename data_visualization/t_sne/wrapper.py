@@ -40,6 +40,7 @@ class Wrapper:
             raise ValueError(
                 "pij, i and j must have the same length"
             )
+        print("fit")
         for epoch in range(self.epochs):
             total = 0.0
             for itr, datas in enumerate(chunks(self.batchsize, *args)):
@@ -56,7 +57,7 @@ class Wrapper:
                     loss.backward()
                     self.optimizer.step()
                     total += loss.item()
-
+            print("msg")
             msg = "Train Epoch: {} \tLoss: {:.6e}"
             msg = msg.format(epoch, total / (len(args[0]) * 1.0))
             print(msg)
