@@ -42,8 +42,6 @@ def dist(a, b):
 def calc_features(data, draw: bool = False):
     feat, targets = [], []
     for clip in data:
-        if not clip.data_samples[0].labels in [7, 8]:
-            continue
 
         # TODO: придумайте способы вычисления признаков на основе ключевых точек
         # distance between landmarks
