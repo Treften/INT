@@ -99,6 +99,7 @@ def draw(points2D, targets, sawe=False):
 
 
 def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
+    print("run_tsne")
     if pca_dim > 0:
         feat = PCA(n_components=pca_dim).fit_transform(feat)
 
