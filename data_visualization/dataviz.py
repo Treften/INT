@@ -129,19 +129,19 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
 if __name__ == "__main__":
     # dataset dir
     base_dir = Path("../Data")
-    if 1:
+    '''if 1:
         train_dataset_root = base_dir / "Ryerson/Video"
         train_file_list = base_dir / "Ryerson/train_data_with_landmarks.txt"
     elif 0:
         train_dataset_root = base_dir / "/AFEW-VA/crop"
         train_file_list = base_dir / "AFEW-VA/crop/train_data_with_landmarks.txt"
-    elif 0:
-        train_dataset_root = (
-            base_dir / "OMGEmotionChallenge-master/omg_TrainVideos/preproc/frames"
+    elif 0:'''
+    train_dataset_root = (
+        base_dir / "omg_TrainVideos/preproc/frames"
         )
-        train_file_list = (
-            base_dir
-            / "/OMGEmotionChallenge-master/omg_TrainVideos/preproc/train_data_with_landmarks.txt"
+    train_file_list = (
+        base_dir
+            / "omg_TrainVideos/preproc/train_data_with_landmarks.txt"
         )
 
     # load dataset
