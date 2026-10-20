@@ -104,10 +104,6 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
         print("pca")
         feat = PCA(n_components=pca_dim).fit_transform(feat)
     print("dist")
-    print("feat shape:", feat.shape, flush=True)
-    print("feat dtype:", feat.dtype, flush=True)
-    print("RAM needed for distances (GB):",
-        feat.shape[0] ** 2 * 8 / 1e9, flush=True)
     distances2 = pairwise_distances(feat, metric="euclidean", squared=True)
     # This return a n x (n-1) prob array
     print("pij")
@@ -157,4 +153,12 @@ if __name__ == "__main__":
     feat, targets = calc_features(data, draw=False)
     print("tsne")
     # run t-SNE
-    run_tsne(feat, targets, pca_dim=0)
+    rng = np.random.default_rng(42)
+
+    n = min(1500, len(feat))
+    idx = rng.choice(len(feat), size=n, replace=False)
+
+    feat_small = feat[idx]
+    targets_small = targets[idx]
+
+    run_tsne(feat_small, targets_small, pca_dim=0)
