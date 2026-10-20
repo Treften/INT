@@ -137,11 +137,11 @@ if __name__ == "__main__":
         train_file_list = base_dir / "AFEW-VA/crop/train_data_with_landmarks.txt"
     elif 0:'''
     train_dataset_root = (
-        base_dir / "omg_TrainVideos/preproc/frames"
+        base_dir / "omg_TrainVideos/frames"
         )
     train_file_list = (
         base_dir
-            / "omg_TrainVideos/preproc/train_data_with_landmarks.txt"
+            / "omg_TrainVideos/train_data_with_landmarks.txt"
         )
 
     # load dataset
