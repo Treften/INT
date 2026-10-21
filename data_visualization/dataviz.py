@@ -231,7 +231,7 @@ if __name__ == "__main__":
     print("tsne")
     # run t-SNE
     rng = np.random.default_rng(42)
-````print(len(feat))
+    print(len(feat))
     n = min(5000, len(feat))
     idx = rng.choice(len(feat), size=n, replace=False)
 
