@@ -100,8 +100,10 @@ def compare_class_separation(points, targets, name):
 def dist(a, b):
     return np.linalg.norm(a - b)
 
-def calc_features(data, draw: bool = False):
+def calc_features(data, draw: bool = False, max_clips: int = 100):
     feat, targets = [], []
+    print(len(data))
+    data = data[:max_clips] if max_clips is not None else data
     for clip in data:
 
         # TODO: придумайте способы вычисления признаков на основе ключевых точек
