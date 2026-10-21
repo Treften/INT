@@ -16,6 +16,9 @@ from scipy.spatial.distance import squareform
 from sklearn import manifold
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import pairwise_distances
+from sklearn.metrics import silhouette_score, davies_bouldin_score
+
+from sklearn.preprocessing import LabelEncoder
 from t_sne.tsne import TSNE as torchTSNE
 
 from data_visualization.t_sne.wrapper import Wrapper
@@ -35,6 +38,64 @@ def get_data(dataset_root, file_list, max_num_clips=0):
     print("frames count:", dataset_parser.get_dataset_size())
     return data
 
+def compare_class_separation(points, targets, name):
+    points = np.asarray(points)
+    labels = LabelEncoder().fit_transform(targets)
+
+    if len(np.unique(labels)) < 2:
+        print(f"{name}: недостаточно классов")
+        return
+
+    silhouette = silhouette_score(
+        points, labels,
+        sample_size=min(2000, len(points)),
+        random_state=42
+    )
+
+    db_index = davies_bouldin_score(points, labels)
+
+    classes = np.unique(labels)
+    centers = np.array([
+        points[labels == c].mean(axis=0)
+        for c in classes
+    ])
+
+    if len(classes) > 1:
+        center_distances = np.linalg.norm(
+            centers[:, None, :] - centers[None, :, :],
+            axis=2
+        )
+        upper = center_distances[
+            np.triu_indices(len(classes), k=1)
+        ]
+        mean_interclass_distance = upper.mean()
+    else:
+        mean_interclass_distance = np.nan
+
+    within_distances = []
+    for c, center in zip(classes, centers):
+        cluster = points[labels == c]
+        distances = np.linalg.norm(cluster - center, axis=1)
+        within_distances.extend(distances)
+
+    mean_intraclass_distance = np.mean(within_distances)
+
+    ratio = mean_interclass_distance / (
+        mean_intraclass_distance + 1e-12
+    )
+
+    print(f"\n{name}")
+    print(f"Silhouette score: {silhouette:.4f}")
+    print(f"Davies-Bouldin index: {db_index:.4f}")
+    print(
+        f"Среднее межклассовое расстояние: "
+        f"{mean_interclass_distance:.4f}"
+    )
+    print(
+        f"Среднее внутриклассовое расстояние: "
+        f"{mean_intraclass_distance:.4f}"
+    )
+    print(f"Отношение расстояний: {ratio:.4f}")
 
 def dist(a, b):
     return np.linalg.norm(a - b)
@@ -113,6 +174,7 @@ def draw(points2D, targets, sawe=True):
 
 def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     print("run_tsne")
+    pca_result = PCA(n_components=2).fit_transform(feat)
     if pca_dim > 0:
         print("pca")
         feat = PCA(n_components=pca_dim).fit_transform(feat)
@@ -137,9 +199,11 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     for itr in range(15):
         w.fit(pij, i, j, itr=itr)
         # Visualize the results
-    embed = model.logits.weight.cpu().data.numpy()
-    draw(embed, targets)
-
+    tsne_result = model.logits.weight.cpu().data.numpy()
+    draw(pca_result, targets)
+    draw(tsne_result, targets)
+    compare_class_separation(pca_result, targets_small, "PCA")
+    compare_class_separation(tsne_result, targets_small, "t-SNE")
 
 if __name__ == "__main__":
     # dataset dir
