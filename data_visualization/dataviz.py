@@ -85,17 +85,30 @@ def calc_features(data, draw: bool = False):
     return np.asarray(feat, dtype=np.float32), np.asarray(targets, dtype=np.float32)
 
 
-def draw(points2D, targets, sawe=False):
-    fig = plt.figure()
-    plt.scatter(points2D[:, 0], points2D[:, 1], c=targets)
-    plt.axis("off")
-    if sawe:
-        plt.savefig("scatter.png", bbox_inches="tight")
-        plt.close(fig)
-    else:
-        fig.show()
-        plt.pause(5)
-        plt.close(fig)
+
+def draw(points2D, targets, sawe=True):
+    fig, ax = plt.subplots(figsize=(10, 8))
+
+    scatter = ax.scatter(
+        points2D[:, 0],
+        points2D[:, 1],
+        c=targets,
+        cmap="viridis",
+        s=12,
+        alpha=0.7
+    )
+
+    ax.set_title("t-SNE visualization")
+    ax.set_xlabel("t-SNE 1")
+    ax.set_ylabel("t-SNE 2")
+    fig.colorbar(scatter, ax=ax, label="Target label")
+
+    output_path = Path("/content/INT/scatter.png")
+    fig.savefig(output_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+    print(f"Visualization saved: {output_path}", flush=True)
+
 
 
 def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
@@ -120,9 +133,9 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
 
     model = torchTSNE(n_points=feat.shape[0], n_dim=tsne_dim)
     print("wrapper")
-    w = Wrapper(model, cuda=True, batchsize=feat.shape[0], epochs=5)
+    w = Wrapper(model, cuda=True, batchsize=feat.shape[0], epochs=10)
     for itr in range(15):
-        w.fit(pij, i, j)
+        w.fit(pij, i, j, offset=itr*15)
         # Visualize the results
         embed = model.logits.weight.cpu().data.numpy()
         draw(embed, targets)
@@ -155,7 +168,7 @@ if __name__ == "__main__":
     # run t-SNE
     rng = np.random.default_rng(42)
 
-    n = min(10000, len(feat))
+    n = min(5000, len(feat))
     idx = rng.choice(len(feat), size=n, replace=False)
 
     feat_small = feat[idx]

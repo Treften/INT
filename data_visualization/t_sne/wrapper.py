@@ -28,7 +28,7 @@ class Wrapper:
         # TODO: добавьте оптимизатор
         self.optimizer = torch.optim.Adam(self.model.parameters(),lr=1e-3)
 
-    def fit(self, *args):
+    def fit(self,offset=0, *args):
         self.model.train()
         if self.cuda:
             self.model.cuda()
@@ -58,5 +58,5 @@ class Wrapper:
                     total += loss.item()
                     
             msg = "Train Epoch: {} \tLoss: {:.6e}"
-            msg = msg.format(epoch, total / (len(args[0]) * 1.0))
+            msg = msg.format(epoch + offset, total / (len(args[0]) * 1.0))
             print(msg)
