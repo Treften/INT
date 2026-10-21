@@ -207,7 +207,7 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
 
 if __name__ == "__main__":
     # dataset dir
-    base_dir = Path("/content/INT/data/")
+    base_dir = Path("/content/INT/data/OMGEmotionChallenge")
     '''if 1:
         train_dataset_root = base_dir / "Ryerson/Video"
         train_file_list = base_dir / "Ryerson/train_data_with_landmarks.txt"
