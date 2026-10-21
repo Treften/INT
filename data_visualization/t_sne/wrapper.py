@@ -59,6 +59,6 @@ class Wrapper:
                     self.optimizer.step()
                     total += loss.item()
                     
-            msg = "Train Epoch: {} \tLoss: {:.6e}"
+            msg = "Train Epoch: {} \tLoss: {:.10f}"
             msg = msg.format(epoch + offset, total / (len(pij) * 1.0))
             print(msg)
