@@ -40,7 +40,6 @@ class Wrapper:
             raise ValueError(
                 "pij, i and j must have the same length"
             )
-        print("fit")
         for epoch in range(self.epochs):
             total = 0.0
             for itr, datas in enumerate(chunks(self.batchsize, *args)):
