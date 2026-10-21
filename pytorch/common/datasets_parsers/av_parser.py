@@ -127,6 +127,8 @@ class AVDBParser(AbstractDatasetParser):
                         for k in range(68)
                     ]
                     idx = os.path.dirname(datas[0])
+                    if i < 10:
+                        print("Path:", repr(datas[0]), "| Clip:", repr(idx))
                 else:
                     label = int((valence + 10) * (arousal + 10))
                     landmarks = [
