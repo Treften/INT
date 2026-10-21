@@ -28,13 +28,13 @@ class Wrapper:
         # TODO: добавьте оптимизатор
         self.optimizer = torch.optim.Adam(self.model.parameters(),lr=1e-3)
 
-    def fit(self,offset=0, *args):
+    def fit(self, pij, i, j, offset=0, *args):
         self.model.train()
         if self.cuda:
             self.model.cuda()
-        pij = np.asarray(args[0], dtype=np.float32)
-        i = np.asarray(args[1], dtype=np.int64)
-        j = np.asarray(args[2], dtype=np.int64)
+        pij = np.asarray(pij, dtype=np.float32)
+        i = np.asarray(i, dtype=np.int64)
+        j = np.asarray(j, dtype=np.int64)
 
         if not (len(pij) == len(i) == len(j)):
             raise ValueError(
