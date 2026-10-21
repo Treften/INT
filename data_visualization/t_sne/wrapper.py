@@ -57,7 +57,7 @@ class Wrapper:
                     loss.backward()
                     self.optimizer.step()
                     total += loss.item()
-            print("msg")
-            msg = "Train Epoch: {} \tLoss: {:.6e}"
-            msg = msg.format(epoch, total / (len(args[0]) * 1.0))
-            print(msg)
+                    
+        msg = "Train Epoch: {} \tLoss: {:.6e}"
+        msg = msg.format(epoch, total / (len(args[0]) * 1.0))
+        print(msg)
