@@ -155,7 +155,7 @@ if __name__ == "__main__":
     # run t-SNE
     rng = np.random.default_rng(42)
 
-    n = min(1500, len(feat))
+    n = min(10000, len(feat))
     idx = rng.choice(len(feat), size=n, replace=False)
 
     feat_small = feat[idx]
