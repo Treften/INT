@@ -3,18 +3,20 @@ import torch
 import numpy as np
 from torch.autograd import Variable
 
-
-def chunks(n, *args):
-    """Yield successive n-sized chunks from l."""
+def chunks(n, pij, i, j):
+    """Yield successive n-sized chunks from pij, i and j."""
     endpoints = []
     start = 0
-    for stop in range(0, len(args[0]), n):
-        if stop - start > 0:
-            endpoints.append((start, stop))
-            start = stop
+
+    for stop in range(n, len(pij) + n, n):
+        stop = min(stop, len(pij))
+        endpoints.append((start, stop))
+        start = stop
+
     random.shuffle(endpoints)
+
     for start, stop in endpoints:
-        yield [a[start:stop] for a in args]
+        yield pij[start:stop], i[start:stop], j[start:stop]
 
 
 class Wrapper:
@@ -42,7 +44,7 @@ class Wrapper:
             )
         for epoch in range(self.epochs):
             total = 0.0
-            for itr, datas in enumerate(chunks(self.batchsize, *args)):
+            for itr, datas in enumerate(chunks(self.batchsize, pij, i, j)):
                 datas = [Variable(torch.from_numpy(data)) for data in datas]
                 if self.cuda:
                     datas = [data.cuda() for data in datas]
