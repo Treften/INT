@@ -83,7 +83,8 @@ class AVDBParser(AbstractDatasetParser):
             arousal_per_clip = []
             for i in progresser:
                 datas = markup_file.readline().strip().split()
-                im_path = os.path.join(self.dataset_root, datas[0])
+                rel_path = datas[0].replace("\\", "/")
+                im_path = os.path.join(self.dataset_root, rel_path)
                 wav_path = None
                 valence = float(datas[1])
                 arousal = float(datas[2])
@@ -126,7 +127,8 @@ class AVDBParser(AbstractDatasetParser):
                         [float(datas[2 * k + 4]), float(datas[2 * k + 5])]
                         for k in range(68)
                     ]
-                    idx = os.path.dirname(datas[0])
+                    idx = os.path.dirname(rel_path)
+
                     if i < 10:
                         print("Path:", repr(datas[0]), "| Clip:", repr(idx))
                 else:
@@ -135,7 +137,7 @@ class AVDBParser(AbstractDatasetParser):
                         [float(datas[2 * k + 3]), float(datas[2 * k + 4])]
                         for k in range(68)
                     ]
-                    idx = os.path.dirname(datas[0])
+                    idx = os.path.dirname(rel_path)
 
                 class_num = max(class_num, int(label))
 
