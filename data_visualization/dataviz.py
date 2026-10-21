@@ -137,8 +137,8 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     for itr in range(15):
         w.fit(pij, i, j, itr=itr)
         # Visualize the results
-        embed = model.logits.weight.cpu().data.numpy()
-        draw(embed, targets)
+    embed = model.logits.weight.cpu().data.numpy()
+    draw(embed, targets)
 
 
 if __name__ == "__main__":
