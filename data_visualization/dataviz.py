@@ -202,8 +202,8 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     tsne_result = model.logits.weight.cpu().data.numpy()
     draw(pca_result, targets)
     draw(tsne_result, targets)
-    compare_class_separation(pca_result, targets_small, "PCA")
-    compare_class_separation(tsne_result, targets_small, "t-SNE")
+    compare_class_separation(pca_result, targets, "PCA")
+    compare_class_separation(tsne_result, targets, "t-SNE")
 
 if __name__ == "__main__":
     # dataset dir
