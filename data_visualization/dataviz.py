@@ -232,10 +232,10 @@ if __name__ == "__main__":
     # run t-SNE
     rng = np.random.default_rng(42)
     print(len(feat))
-    n = min(5000, len(feat))
+    '''n = min(5000, len(feat))
     idx = rng.choice(len(feat), size=n, replace=False)
 
     feat_small = feat[idx]
-    targets_small = targets[idx]
+    targets_small = targets[idx]'''
 
-    run_tsne(feat_small, targets_small, pca_dim=0)
+    run_tsne(feat, targets, pca_dim=0)
