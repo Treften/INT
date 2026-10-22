@@ -224,7 +224,7 @@ if __name__ == "__main__":
         )
 
     # load dataset
-    data = get_data(train_dataset_root, train_file_list, max_num_clips=0)
+    data = get_data(train_dataset_root, train_file_list, max_num_clips=500)
     # get features
     feat, targets = calc_features(data, draw=False)
     print("tsne")
