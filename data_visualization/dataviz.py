@@ -196,7 +196,7 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     model = torchTSNE(n_points=feat.shape[0], n_dim=tsne_dim)
     print("wrapper")
     w = Wrapper(model, cuda=True, batchsize=feat.shape[0], epochs=5)
-    for itr in range(15):
+    for itr in range(22):
         w.fit(pij, i, j, offset=itr)
         # Visualize the results
     tsne_result = model.logits.weight.cpu().data.numpy()
