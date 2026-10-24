@@ -154,7 +154,7 @@ def calc_features(data, draw: bool = False):
 
 
             features = (landmarks - lm_ref) / (face_width + 1e-8)
-            feat = [
+            feat = np.concatenate[
             features.flatten(),
             mouth_width / face_width,
             mouth_height / (mouth_width + 1e-8),
