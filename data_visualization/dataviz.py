@@ -154,7 +154,7 @@ def calc_features(data, draw: bool = False):
 
 
             features = (landmarks - lm_ref) / (face_width + 1e-8)
-            feat = np.concatenate[
+            feat = np.concatenate([
             features.flatten(),
             mouth_width / face_width,
             mouth_height / (mouth_width + 1e-8),
@@ -172,7 +172,7 @@ def calc_features(data, draw: bool = False):
             #angle(39, 42, 45),
             #mouth_corner_y,
             #symmetry,
-        ]
+        ])
             if draw:
                 img = cv2.cv.LoadImage(sample.img_rel_path)
                 for lm in sample.landmarks:
