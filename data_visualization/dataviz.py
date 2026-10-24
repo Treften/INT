@@ -141,9 +141,9 @@ def calc_features(data, draw: bool = False):
             nose_width = dist(31, 35)
             nose_to_mouth = dist(33, 51)
 
-            mouth_corner_y = (
-                (lm[48, 1] + lm[54, 1]) / 2 - lm[51, 1]
-            ) / face_width
+            # mouth_corner_y = (
+            #     (lm[48, 1] + lm[54, 1]) / 2 - lm[51, 1]
+            # ) / face_width
 
             # Face symmetry
             symmetry = np.mean([
