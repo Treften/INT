@@ -153,7 +153,7 @@ def calc_features(data, draw: bool = False):
             ]) / face_width
 
 
-
+            features = (landmarks - lm_ref) / (face_width + 1e-8)
             geometry = np.asarray([
                 mouth_width / face_width,
                 mouth_height / (mouth_width + 1e-8),
