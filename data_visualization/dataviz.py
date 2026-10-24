@@ -153,26 +153,31 @@ def calc_features(data, draw: bool = False):
             ]) / face_width
 
 
-            features = (landmarks - lm_ref) / (face_width + 1e-8)
-            feat = np.concatenate([
-            features.flatten(),
-            mouth_width / face_width,
-            mouth_height / (mouth_width + 1e-8),
-            eye_left_width / face_width,
-            eye_right_width / face_width,
-            eye_left_height / (eye_left_width + 1e-8),
-            eye_right_height / (eye_right_width + 1e-8),
-            brow_left_height / face_height,
-            brow_right_height / face_height,
-            brow_distance / face_width,
-            nose_width / face_width,
-            nose_to_mouth / face_height,
-            #angle(48, 51, 54),
-            #angle(36, 39, 42),
-            #angle(39, 42, 45),
-            #mouth_corner_y,
-            #symmetry,
-        ])
+
+            geometry = np.asarray([
+                mouth_width / face_width,
+                mouth_height / (mouth_width + 1e-8),
+                eye_left_width / face_width,
+                eye_right_width / face_width,
+                eye_left_height / (eye_left_width + 1e-8),
+                eye_right_height / (eye_right_width + 1e-8),
+                brow_left_height / face_height,
+                brow_right_height / face_height,
+                brow_distance / face_width,
+                nose_width / face_width,
+                nose_to_mouth / face_height,
+            ], dtype=np.float32)
+#angle(48, 51, 54),
+#angle(36, 39, 42),
+#angle(39, 42, 45),
+#mouth_corner_y,
+#symmetry,
+            features = np.concatenate([
+                features.flatten(),
+                geometry,
+            ])
+
+            feat.append(features)
             if draw:
                 img = cv2.cv.LoadImage(sample.img_rel_path)
                 for lm in sample.landmarks:
