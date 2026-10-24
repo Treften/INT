@@ -99,7 +99,12 @@ def compare_class_separation(points, targets, name):
 
 def dist(a, b):
     return np.linalg.norm(a - b)
-
+# def angle(i, j, k):
+#     a = lm[i] - lm[j]
+#     b = lm[k] - lm[j]
+#     cos = np.dot(a, b) / (
+#     np.linalg.norm(a) * np.linalg.norm(b) + 1e-8)
+#     return np.arccos(np.clip(cos, -1, 1))
 def calc_features(data, draw: bool = False):
     feat, targets = [], []
     print(len(data))
@@ -119,22 +124,55 @@ def calc_features(data, draw: bool = False):
             #feat.append(nose_dist)
             targets.append(sample.labels)
 
-
+            face_width = np.linalg.norm(landmarks[0] - landmarks[16])
+            face_height = dist(27, 8) + 1e-8
 
             mouth_width = dist(landmarks[48], landmarks[54])
             mouth_height = dist(landmarks[51], landmarks[57])
 
-            eye_left_width = dist(landmarks[36], landmarks[39])
-            eye_right_width = dist(landmarks[42], landmarks[45])
+            eye_left_width = dist(36, 39)
+            eye_right_width = dist(42, 45)
+            eye_left_height = (dist(37, 41) + dist(38, 40)) / 2
+            eye_right_height = (dist(43, 47) + dist(44, 46)) / 2
 
-            brow_left_eye = dist(landmarks[21], landmarks[39])
-            brow_right_eye = dist(landmarks[22], landmarks[42])
+            brow_left_height = dist(21, 39)
+            brow_right_height = dist(22, 42)
+            brow_distance = dist(21, 22)
+            nose_width = dist(31, 35)
+            nose_to_mouth = dist(33, 51)
 
-            face_width = np.linalg.norm(landmarks[0] - landmarks[16])
+            mouth_corner_y = (
+                (lm[48, 1] + lm[54, 1]) / 2 - lm[51, 1]
+            ) / face_width
+
+            # Face symmetry
+            symmetry = np.mean([
+                abs(dist(36, 48) - dist(45, 54)),
+                abs(dist(39, 48) - dist(42, 54)),
+                abs(dist(21, 39) - dist(22, 42)),
+            ]) / face_width
+
 
             features = (landmarks - lm_ref) / (face_width + 1e-8)
-
-            feat.append(features.flatten())
+            feat = [
+            features.flatten(),
+            mouth_width / face_width,
+            mouth_height / (mouth_width + 1e-8),
+            eye_left_width / face_width,
+            eye_right_width / face_width,
+            eye_left_height / (eye_left_width + 1e-8),
+            eye_right_height / (eye_right_width + 1e-8),
+            brow_left_height / face_height,
+            brow_right_height / face_height,
+            brow_distance / face_width,
+            nose_width / face_width,
+            nose_to_mouth / face_height,
+            #angle(48, 51, 54),
+            #angle(36, 39, 42),
+            #angle(39, 42, 45),
+            #mouth_corner_y,
+            #symmetry,
+        ]
             if draw:
                 img = cv2.cv.LoadImage(sample.img_rel_path)
                 for lm in sample.landmarks:
@@ -196,7 +234,7 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     model = torchTSNE(n_points=feat.shape[0], n_dim=tsne_dim)
     print("wrapper")
     w = Wrapper(model, cuda=True, batchsize=feat.shape[0], epochs=5)
-    for itr in range(10):
+    for itr in range(15):
         w.fit(pij, i, j, offset=itr)
         # Visualize the results
     tsne_result = model.logits.weight.cpu().data.numpy()
