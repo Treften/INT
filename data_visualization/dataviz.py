@@ -99,12 +99,12 @@ def compare_class_separation(points, targets, name):
 
 def dist(a, b):
     return np.linalg.norm(a - b)
-# def angle(i, j, k):
-#     a = lm[i] - lm[j]
-#     b = lm[k] - lm[j]
-#     cos = np.dot(a, b) / (
-#     np.linalg.norm(a) * np.linalg.norm(b) + 1e-8)
-#     return np.arccos(np.clip(cos, -1, 1))
+def angle(lm, i, j, k):
+    a = lm[i] - lm[j]
+    b = lm[k] - lm[j]
+    cos = np.dot(a, b) / (
+    np.linalg.norm(a) * np.linalg.norm(b) + 1e-8)
+    return np.arccos(np.clip(cos, -1, 1))
 def calc_features(data, draw: bool = False):
     feat, targets = [], []
     print(len(data))
@@ -144,8 +144,6 @@ def calc_features(data, draw: bool = False):
             # mouth_corner_y = (
             #     (lm[48, 1] + lm[54, 1]) / 2 - lm[51, 1]
             # ) / face_width
-
-            # Face symmetry
             symmetry = np.mean([
                 abs(dist(36, 48) - dist(45, 54)),
                 abs(dist(39, 48) - dist(42, 54)),
@@ -166,14 +164,15 @@ def calc_features(data, draw: bool = False):
                 brow_distance / face_width,
                 nose_width / face_width,
                 nose_to_mouth / face_height,
+                #angle(lm, 48, 51, 54),
+                #angle(lm, 36, 39, 42),
+                #angle(lm, 39, 42, 45),
+                #symmetry,
             ], dtype=np.float32)
-#angle(48, 51, 54),
-#angle(36, 39, 42),
-#angle(39, 42, 45),
-#mouth_corner_y,
+
 #symmetry,
             features = np.concatenate([
-                features.flatten(),
+                #features.flatten(),
                 geometry,
             ])
 
