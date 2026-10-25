@@ -158,32 +158,27 @@ if __name__ == "__main__":
     use_dump = False  # используйте dump для быстрой загрузки рассчитанных фич из файла
 
     # dataset dir
-    base_dir = Path("/path/to/data")
-    if 1:
-        train_dataset_root = base_dir / "Ryerson/Video"
-        train_file_list = base_dir / "Ryerson/train_data_with_landmarks.txt"
-        test_dataset_root = base_dir / "Ryerson/Video"
-        test_file_list = base_dir / "Ryerson/test_data_with_landmarks.txt"
-    else:
-        train_dataset_root = (
-            base_dir / "OMGEmotionChallenge-master/omg_TrainVideos/preproc/frames"
+    base_dir = Path("/content/INT/data/OMGEmotionChallenge")
+    train_dataset_root = (
+        base_dir / "omg_TrainVideos/frames"
         )
-        train_file_list = (
-            base_dir
-            / "OMGEmotionChallenge-master/omg_TrainVideos/preproc/train_data_with_landmarks.txt"
+    train_file_list = (
+        base_dir
+            / "omg_TrainVideos/train_data_with_landmarks.txt"
         )
-        test_dataset_root = (
-            base_dir / "OMGEmotionChallenge-master/omg_ValidVideos/preproc/frames"
-        )
-        test_file_list = (
-            base_dir
-            / "OMGEmotionChallenge-master/omg_ValidVideos/preproc/valid_data_with_landmarks.txt"
-        )
+    test_dataset_root = (
+        base_dir / "omg_ValidVideos/frames"
+    )
+    test_file_list = (
+        base_dir
+        / "omg_ValidVideos/valid_data_with_landmarks.txt"
+    )
+
 
     if not use_dump:
         # load dataset
-        train_data = get_data(train_dataset_root, train_file_list, max_num_clips=0)
-        test_data = get_data(test_dataset_root, test_file_list, max_num_clips=0)
+        train_data = get_data(train_dataset_root, train_file_list, max_num_clips=50)
+        test_data = get_data(test_dataset_root, test_file_list, max_num_clips=10)
 
         # get features
         train_feat, train_targets = calc_features(train_data)
