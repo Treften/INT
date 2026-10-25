@@ -24,7 +24,11 @@ class Accuracy:
         self.target_all = np.asarray(self.target_all, dtype=np.int32)
         self.target_clips = [clip.labels for clip in data]
         self.target_clips = np.asarray(self.target_clips, dtype=np.int32)
-        self.target_names = sorted([str(int(l)) for l in Counter(self.target_all).keys()])
+        self.target_names = [
+    "anger", "disgust", "fear", "happy",
+    "neutral", "sad", "surprise"
+]
+        self.labels = list(range(7))
 
     def plot_confusion_matrix(
         self, cm, classes, normalize=False, title="Confusion matrix", cmap=plt.cm.Blues
@@ -85,7 +89,7 @@ class Accuracy:
         assert self.target_all.shape[0] == predict.shape[0], "Invalid predict!"
         print(
             classification_report(
-                self.target_all, predict, target_names=self.target_names
+                self.target_all, predict, labels = self.labels, target_names=self.target_names
             )
         )
         self.calc_cnf_matrix(self.target_all, predict)
@@ -103,7 +107,7 @@ class Accuracy:
 
         print(
             classification_report(
-                self.target_clips, predict_clips, target_names=self.target_names
+                self.target_clips, predict_clips, labels = self.labels, target_names=self.target_names
             )
         )
         self.calc_cnf_matrix(self.target_clips, predict_clips)
