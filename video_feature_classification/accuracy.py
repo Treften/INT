@@ -39,7 +39,13 @@ class Accuracy:
 
         """
         if normalize:
-            cm = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
+            cm = cm.astype(float)
+            cm = np.divide(
+                cm,
+                cm.sum(axis=1, keepdims=True),
+                out=np.zeros_like(cm),
+                where=cm.sum(axis=1, keepdims=True) != 0,
+            )
 
         print(title + "\n", cm)
 
