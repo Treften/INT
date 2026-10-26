@@ -9,7 +9,7 @@ import random
 from pathlib import Path
 
 
-from accuracy import Accuracy
+from accuracy import Accuracy, AccuracyRegression
 import cv2
 import numpy as np
 from tqdm import tqdm
@@ -19,6 +19,9 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.svm import SVC
+from sklearn.ensemble import ExtraTreesRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.multioutput import MultiOutputRegressor
 
 def get_data(dataset_root, file_list, max_num_clips=0, max_num_samples=50):
     dataset_parser = AVDBParser(
@@ -36,11 +39,8 @@ def get_data(dataset_root, file_list, max_num_clips=0, max_num_samples=50):
 
 
 
-
-
-
 def calc_features(data):
-    feat, targets = [], []
+    feat, targets, va_targets = [], [], []
 
     # Индексы для стандартной разметки лица из 68 точек.
     pairs_68 = [
@@ -106,7 +106,8 @@ def calc_features(data):
 
                 feat.append(feature)
                 targets.append(int(sample.labels))
-
+                va_targets.append([clip.valence, clip.arousal])
+                
             except (ValueError, TypeError, IndexError):
                 rm_list.append(sample)
 
@@ -130,6 +131,7 @@ def calc_features(data):
     return (
         np.asarray(feat, dtype=np.float32),
         np.asarray(targets, dtype=np.int64),
+        np.asarray(va_targets, dtype=np.float32),
     )
 
 
@@ -151,6 +153,29 @@ def classification(X_train, X_test, y_train, y_test, accuracy_fn, pca_dim: int =
     accuracy_fn.by_clips(y_pred)
     return model, y_pred
 
+def regression(X_train, X_test, y_train, y_test, accuracy_fn):
+    model = make_pipeline(
+        StandardScaler(),
+        ExtraTreesRegressor(
+            n_estimators=300,
+            min_samples_leaf=2,
+            random_state=42,
+            n_jobs=-1,
+        ),
+    )
+
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    for i, name in enumerate(["Valence", "Arousal"]):
+        print(
+            f"{name}: MAE={mean_absolute_error(y_test[:, i], y_pred[:, i]):.4f}, "
+            f"RMSE={np.sqrt(mean_squared_error(y_test[:, i], y_pred[:, i])):.4f}, "
+            f"R2={r2_score(y_test[:, i], y_pred[:, i]):.4f}"
+        )
+
+    accuracy_fn.by_clips(y_test, y_pred)
+    return model, y_pred
 
 if __name__ == "__main__":
     experiment_name = "exp_1"
@@ -177,15 +202,15 @@ if __name__ == "__main__":
 
     if not use_dump:
         # load dataset
-        train_data = get_data(train_dataset_root, train_file_list, max_num_clips=1000)
-        test_data = get_data(test_dataset_root, test_file_list, max_num_clips=200)
+        train_data = get_data(train_dataset_root, train_file_list, max_num_clips=100)
+        test_data = get_data(test_dataset_root, test_file_list, max_num_clips=20)
 
         # get features
-        train_feat, train_targets = calc_features(train_data)
-        test_feat, test_targets = calc_features(test_data)
+        train_feat, train_targets, train_va_targets = calc_features(train_data)
+        test_feat, test_targets, test_va_targets = calc_features(test_data)
 
         accuracy_fn = Accuracy(test_data, experiment_name=experiment_name)
-
+        accuracy_va = AccuracyRegression(test_data, threshold=0.1)
         # with open(experiment_name + '.pickle', 'wb') as f:
         #    pickle.dump([train_feat, train_targets, test_feat, test_targets, accuracy_fn], f, protocol=2)
     else:
@@ -195,11 +220,5 @@ if __name__ == "__main__":
             )
 
     # run classifiers
-    classification(
-        train_feat,
-        test_feat,
-        train_targets,
-        test_targets,
-        accuracy_fn=accuracy_fn,
-        pca_dim=0,
-    )
+    classification( train_feat,test_feat,train_targets,test_targets,accuracy_fn=accuracy_fn,pca_dim=0,)
+    regression(train_feat, test_feat,train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
