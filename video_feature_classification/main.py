@@ -41,7 +41,8 @@ def get_data(dataset_root, file_list, max_num_clips=0, max_num_samples=50):
 
 def calc_features(data):
     feat, targets, va_targets = [], [], []
-    clip_features = []
+    clip_feat, clip_va_targets = [], []
+
     # Индексы для стандартной разметки лица из 68 точек.
     pairs_68 = [
         (36, 39), (42, 45),  # ширина глаз
@@ -58,7 +59,7 @@ def calc_features(data):
 
     for clip in tqdm(data, desc="calc video features", unit="files"):
         rm_list = []
-
+        clip_features = []
         for sample in clip.data_samples:
             try:
                 points = np.asarray(sample.landmarks, dtype=np.float32)
@@ -99,6 +100,9 @@ def calc_features(data):
 
                 features.append(hull_features)
                 feature = np.concatenate(features)
+                feat.append(feature)
+                targets.append(int(sample.labels))
+                clip_features.append(feature)
                 clip_features.append(feature)
                 if not np.isfinite(feature).all():
                     rm_list.append(sample)
@@ -107,9 +111,8 @@ def calc_features(data):
             except (ValueError, TypeError, IndexError):
                 rm_list.append(sample)
         if clip_features:
-            feat.append(np.mean(clip_features, axis=0))
-            targets.append(int(clip.labels))
-            va_targets.append([clip.valence, clip.arousal])
+            clip_feat.append(np.mean(clip_features, axis=0))
+            clip_va_targets.append([clip.valence, clip.arousal])
 
         for sample in rm_list:
             clip.data_samples.remove(sample)
@@ -131,7 +134,8 @@ def calc_features(data):
     return (
         np.asarray(feat, dtype=np.float32),
         np.asarray(targets, dtype=np.int64),
-        np.asarray(va_targets, dtype=np.float32),
+        np.asarray(clip_feat, dtype=np.float32),
+        np.asarray(clip_va_targets, dtype=np.float32),
     )
 
 
@@ -204,8 +208,8 @@ if __name__ == "__main__":
         test_data = get_data(test_dataset_root, test_file_list, max_num_clips=20)
 
         # get features
-        train_feat, train_targets, train_va_targets = calc_features(train_data)
-        test_feat, test_targets, test_va_targets = calc_features(test_data)
+        train_feat, train_targets, train_clip_feat, train_va_targets = calc_features(train_data)
+        test_feat, test_targets, test_clip_feat, test_va_targets = calc_features(test_data)
 
         accuracy_fn = Accuracy(test_data, experiment_name=experiment_name)
         accuracy_va = AccuracyRegression(test_data, threshold=0.1)
@@ -219,4 +223,4 @@ if __name__ == "__main__":
 
     # run classifiers
     classification( train_feat,test_feat,train_targets,test_targets,accuracy_fn=accuracy_fn,pca_dim=0,)
-    regression(train_feat, test_feat,train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
+    regression(train_clip_feat, test_clip_feat,train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
