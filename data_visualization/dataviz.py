@@ -172,7 +172,7 @@ def calc_features(data, draw: bool = False):
 
 #symmetry,
             features = np.concatenate([
-                #features.flatten(),
+                features.flatten(),
                 geometry,
             ])
 
