@@ -41,7 +41,7 @@ def get_data(dataset_root, file_list, max_num_clips=0, max_num_samples=50):
 
 def calc_features(data):
     feat, targets, va_targets = [], [], []
-
+    clip_features = []
     # Индексы для стандартной разметки лица из 68 точек.
     pairs_68 = [
         (36, 39), (42, 45),  # ширина глаз
@@ -99,17 +99,17 @@ def calc_features(data):
 
                 features.append(hull_features)
                 feature = np.concatenate(features)
-
+                clip_features.append(feature)
                 if not np.isfinite(feature).all():
                     rm_list.append(sample)
                     continue
-
-                feat.append(feature)
-                targets.append(int(sample.labels))
-                va_targets.append([clip.valence, clip.arousal])
                 
             except (ValueError, TypeError, IndexError):
                 rm_list.append(sample)
+        if clip_features:
+            feat.append(np.mean(clip_features, axis=0))
+            targets.append(int(clip.labels))
+            va_targets.append([clip.valence, clip.arousal])
 
         for sample in rm_list:
             clip.data_samples.remove(sample)
@@ -137,8 +137,6 @@ def calc_features(data):
 
 
 def classification(X_train, X_test, y_train, y_test, accuracy_fn, pca_dim: int = 0):
-
-
     steps = [StandardScaler()]
     if pca_dim > 0:
         steps.append(PCA(n_components=min(pca_dim, X_train.shape[1], X_train.shape[0] - 1)))
