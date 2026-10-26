@@ -164,10 +164,10 @@ def calc_features(data, draw: bool = False):
                 brow_distance / face_width,
                 nose_width / face_width,
                 nose_to_mouth / face_height,
-                #angle(lm, 48, 51, 54),
-                #angle(lm, 36, 39, 42),
-                #angle(lm, 39, 42, 45),
-                #symmetry,
+                angle(lm, 48, 51, 54),
+                angle(lm, 36, 39, 42),
+                angle(lm, 39, 42, 45),
+                symmetry,
             ], dtype=np.float32)
 
 #symmetry,
