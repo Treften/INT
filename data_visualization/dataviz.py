@@ -164,10 +164,10 @@ def calc_features(data, draw: bool = False):
                 brow_distance / face_width,
                 nose_width / face_width,
                 nose_to_mouth / face_height,
-                #angle(landmarks, 48, 51, 54),
-                #angle(landmarks, 36, 39, 42),
-                #angle(landmarks, 39, 42, 45),
-                #symmetry,
+                angle(landmarks, 48, 51, 54),
+                angle(landmarks, 36, 39, 42),
+                angle(landmarks, 39, 42, 45),
+                symmetry,
             ], dtype=np.float32)
 
 #symmetry,
@@ -217,7 +217,6 @@ def draw(points2D, targets, sawe=True):
 def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     print("run_tsne")
     pca_result = PCA(n_components=2).fit_transform(feat)
-    feat = StandardScaler().fit_transform(feat)
     if pca_dim > 0:
         print("pca")
         feat = PCA(n_components=pca_dim).fit_transform(feat)
