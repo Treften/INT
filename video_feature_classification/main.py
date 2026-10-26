@@ -204,8 +204,8 @@ if __name__ == "__main__":
 
     if not use_dump:
         # load dataset
-        train_data = get_data(train_dataset_root, train_file_list, max_num_clips=1200)
-        test_data = get_data(test_dataset_root, test_file_list, max_num_clips=300)
+        train_data = get_data(train_dataset_root, train_file_list, max_num_clips=1000)
+        test_data = get_data(test_dataset_root, test_file_list, max_num_clips=200)
 
         # get features
         train_feat, train_targets, train_clip_feat, train_va_targets = calc_features(train_data)
