@@ -126,7 +126,7 @@ def calc_features(data):
                         perimeter,
                         area / (perimeter ** 2 + 1e-8),
                     ], dtype=np.float32),
-                    geometry_features(p),
+                    #geometry_features(p),
                 ])
 
                 delta = (
