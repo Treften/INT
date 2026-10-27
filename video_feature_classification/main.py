@@ -8,7 +8,6 @@ import random
 
 from pathlib import Path
 
-
 from accuracy import Accuracy, AccuracyRegression
 import cv2
 import numpy as np
@@ -39,27 +38,52 @@ def get_data(dataset_root, file_list, max_num_clips=0, max_num_samples=50):
 
 
 
+def geometry_features(p):
+    def d(i, j):
+        return np.linalg.norm(p[i] - p[j])
+
+    eps = 1e-6
+    eye = d(36, 45) + eps
+    mouth = d(48, 54) + eps
+    face = d(0, 16) + eps
+
+    return np.asarray([
+        d(62, 66) / mouth,
+        d(63, 65) / mouth,
+        d(51, 57) / mouth,
+        d(37, 41) / eye,
+        d(38, 40) / eye,
+        d(43, 47) / eye,
+        d(44, 46) / eye,
+        d(21, 22) / eye,
+        d(19, 24) / eye,
+        d(27, 30) / eye,
+        mouth / face,
+        d(31, 35) / face,
+        abs(d(37, 41) - d(44, 46)) / eye,
+        abs(d(38, 40) - d(43, 47)) / eye,
+        abs(d(36, 39) - d(42, 45)) / eye,
+        abs(d(48, 51) - d(51, 54)) / mouth,
+    ], dtype=np.float32)
+
+
 def calc_features(data):
-    feat, targets, va_targets = [], [], []
+    feat, targets = [], []
     clip_feat, clip_va_targets = [], []
 
-    # Индексы для стандартной разметки лица из 68 точек.
     pairs_68 = [
-        (36, 39), (42, 45),  # ширина глаз
-        (37, 41), (38, 40),  # раскрытие левого глаза
-        (43, 47), (44, 46),  # раскрытие правого глаза
-        (21, 22), (19, 24),  # расстояния между бровями
-        (27, 30), (31, 35),  # нос
-        (48, 54), (51, 57),  # ширина и раскрытие рта
-        (62, 66), (63, 65),  # внутреннее раскрытие рта
-        (48, 60), (54, 64),
-        (17, 26), (21, 22),
-        (36, 45), (39, 42),
+        (36, 39), (42, 45), (37, 41), (38, 40),
+        (43, 47), (44, 46), (21, 22), (19, 24),
+        (27, 30), (31, 35), (48, 54), (51, 57),
+        (62, 66), (63, 65), (48, 60), (54, 64),
+        (17, 26), (36, 45), (39, 42),
     ]
 
     for clip in tqdm(data, desc="calc video features", unit="files"):
         rm_list = []
         clip_features = []
+        prev_points = None
+
         for sample in clip.data_samples:
             try:
                 points = np.asarray(sample.landmarks, dtype=np.float32)
@@ -67,49 +91,69 @@ def calc_features(data):
                 if (
                     points.ndim != 2
                     or points.shape[1] != 2
-                    or len(points) < 3
+                    or len(points) < 68
                     or not np.isfinite(points).all()
                     or sample.labels is None
                 ):
                     rm_list.append(sample)
                     continue
 
-                
                 left_eye = points[36:42].mean(axis=0)
                 right_eye = points[42:48].mean(axis=0)
                 center = (left_eye + right_eye) / 2
                 scale = np.linalg.norm(right_eye - left_eye)
 
-
                 if not np.isfinite(scale) or scale < 1e-6:
                     rm_list.append(sample)
                     continue
 
-                p = (points - center) / scale
+                p = (points[:68] - center) / scale
 
-                features = [p.flatten()]
-
-                distances = np.array([np.linalg.norm(p[a] - p[b])for a, b in pairs_68], dtype=np.float32)
-                features.append(distances)
+                distances = np.asarray(
+                    [np.linalg.norm(p[a] - p[b]) for a, b in pairs_68],
+                    dtype=np.float32,
+                )
 
                 hull = cv2.convexHull(p.astype(np.float32))
                 area = cv2.contourArea(hull)
                 perimeter = cv2.arcLength(hull, True)
 
-                hull_features = np.array([area,perimeter,area / (perimeter ** 2 + 1e-8),], dtype=np.float32)
+                base = np.concatenate([
+                    p.flatten(),
+                    distances,
+                    np.asarray([
+                        area,
+                        perimeter,
+                        area / (perimeter ** 2 + 1e-8),
+                    ], dtype=np.float32),
+                    geometry_features(p),
+                ])
 
-                features.append(hull_features)
-                feature = np.concatenate(features)
-                feat.append(feature)
-                targets.append(int(sample.labels))
-                clip_features.append(feature)
-                clip_features.append(feature)
+                delta = (
+                    np.zeros_like(p)
+                    if prev_points is None
+                    else p - prev_points
+                )
+
+                temporal = np.concatenate([
+                    delta.flatten(),
+                    np.abs(delta).mean(axis=0),
+                ])
+
+                feature = np.concatenate([base]) #temporal])
+
                 if not np.isfinite(feature).all():
                     rm_list.append(sample)
                     continue
-                
+
+                feat.append(feature)
+                targets.append(int(sample.labels))
+                clip_features.append(feature)
+                prev_points = p.copy()
+
             except (ValueError, TypeError, IndexError):
                 rm_list.append(sample)
+
         if clip_features:
             clip_feat.append(np.mean(clip_features, axis=0))
             clip_va_targets.append([clip.valence, clip.arousal])
@@ -120,16 +164,10 @@ def calc_features(data):
     if not feat:
         raise ValueError("Не удалось извлечь ни одного признакового вектора.")
 
-    lengths = {len(x) for x in feat}
-    if len(lengths) != 1:
-        raise ValueError(
-            "Разное количество landmarks в кадрах: "
-            "признаки имеют разную размерность."
-        )
-
     print("feat count:", len(feat))
     print("feature dimension:", len(feat[0]))
     print("targets count:", len(targets))
+    print("clip feature count:", len(clip_feat))
 
     return (
         np.asarray(feat, dtype=np.float32),
@@ -222,6 +260,5 @@ if __name__ == "__main__":
             )
 
     # run classifiers
-    for pca_dim in [ 20, 30, 50, 80]:
-        classification( train_feat,test_feat,train_targets,test_targets,accuracy_fn=accuracy_fn,pca_dim=100)
+    classification( train_feat,test_feat,train_targets,test_targets,accuracy_fn=accuracy_fn,pca_dim=0)
     regression(train_clip_feat, test_clip_feat,train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
