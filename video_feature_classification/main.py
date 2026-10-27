@@ -126,7 +126,7 @@ def calc_features(data):
                         perimeter,
                         area / (perimeter ** 2 + 1e-8),
                     ], dtype=np.float32),
-                    #geometry_features(p),
+                    geometry_features(p),
                 ])
 
                 delta = (
@@ -140,7 +140,7 @@ def calc_features(data):
                     np.abs(delta).mean(axis=0),
                 ])
 
-                feature = np.concatenate([base]) #temporal])
+                feature = np.concatenate([base, temporal])
 
                 if not np.isfinite(feature).all():
                     rm_list.append(sample)
