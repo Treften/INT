@@ -301,20 +301,13 @@ if __name__ == "__main__":
 
     # dataset dir
     base_dir = Path("/content/INT/data/OMGEmotionChallenge")
-    train_dataset_root = (
-        base_dir / "omg_TrainVideos/frames"
-        )
+    train_dataset_root = (base_dir / "omg_TrainVideos/frames")
     train_file_list = (
-        base_dir
-            / "omg_TrainVideos/train_data_with_landmarks.txt"
-        )
+        base_dir/ "omg_TrainVideos/train_data_with_landmarks.txt")
     test_dataset_root = (
-        base_dir / "omg_ValidVideos/frames"
-    )
+        base_dir / "omg_ValidVideos/frames")
     test_file_list = (
-        base_dir
-        / "omg_ValidVideos/valid_data_with_landmarks.txt"
-    )
+        base_dir/ "omg_ValidVideos/valid_data_with_landmarks.txt")
 
 
     if not use_dump:
