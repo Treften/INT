@@ -21,6 +21,10 @@ from sklearn.svm import SVC
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.multioutput import MultiOutputRegressor
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, f1_score, classification_report
 
 def get_data(dataset_root, file_list, max_num_clips=0, max_num_samples=50):
     dataset_parser = AVDBParser(
@@ -178,19 +182,92 @@ def calc_features(data):
 
 
 
-def classification(X_train, X_test, y_train, y_test, accuracy_fn, pca_dim: int = 0):
-    steps = [StandardScaler()]
-    if pca_dim > 0:
-        steps.append(PCA(n_components=min(pca_dim, X_train.shape[1], X_train.shape[0] - 1)))
-    steps.append(SVC(C=3.0, kernel="rbf", class_weight="balanced"))
+def classification(
+    X_train, X_test, y_train, y_test,
+    accuracy_fn=None, pca_dim=0,
+):
+    models = {
+        "SVM": make_pipeline(
+            StandardScaler(),
+            *([PCA(n_components=min(
+                pca_dim, X_train.shape[1], X_train.shape[0] - 1
+            ))] if pca_dim > 0 else []),
+            SVC(C=3.0, kernel="rbf", class_weight="balanced"),
+        ),
+        "Logistic Regression": make_pipeline(
+            StandardScaler(),
+            LogisticRegression(
+                C=1.0, max_iter=3000, class_weight="balanced"
+            ),
+        ),
+        "Extra Trees": ExtraTreesClassifier(
+            n_estimators=400,
+            min_samples_leaf=2,
+            max_features=0.8,
+            class_weight="balanced",
+            random_state=42,
+            n_jobs=-1,
+        ),
+        "Random Forest": RandomForestClassifier(
+            n_estimators=400,
+            min_samples_leaf=2,
+            class_weight="balanced_subsample",
+            random_state=42,
+            n_jobs=-1,
+        ),
+        "KNN": make_pipeline(
+            StandardScaler(),
+            KNeighborsClassifier(n_neighbors=15, weights="distance"),
+        ),
+    }
 
-    model = make_pipeline(*steps)
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+    results = {}
+    for name, model in models.items():
+        model.fit(X_train, y_train)
+        pred = model.predict(X_test)
 
-    print("Test accuracy:", np.mean(y_pred == y_test))
-    accuracy_fn.by_frames(y_pred)
-    accuracy_fn.by_clips(y_pred)
+        results[name] = {
+            "model": model,
+            "pred": pred,
+            "accuracy": accuracy_score(y_test, pred),
+            "macro_f1": f1_score(
+                y_test, pred, average="macro", zero_division=0
+            ),
+        }
+
+        print(
+            f"\n{name}: "
+            f"accuracy={results[name]['accuracy']:.4f}, "
+            f"macro-F1={results[name]['macro_f1']:.4f}"
+        )
+
+    print("\nСравнение моделей:")
+    for name, result in sorted(
+        results.items(),
+        key=lambda item: item[1]["macro_f1"],
+        reverse=True,
+    ):
+        print(
+            f"{name:22s} "
+            f"accuracy={result['accuracy']:.4f} "
+            f"macro-F1={result['macro_f1']:.4f}"
+        )
+
+    # Не выбираем лучшую модель по тестовой выборке автоматически.
+    # Для детального отчёта можно указать модель отдельно.
+    name = "SVM"
+    model = results[name]["model"]
+    y_pred = results[name]["pred"]
+
+    print(f"\nClassification report: {name}")
+    print(classification_report(
+        y_test, y_pred, zero_division=0
+    ))
+
+    if accuracy_fn is not None:
+        accuracy_fn.by_frames(y_pred)
+        accuracy_fn.by_clips(y_pred)
+
     return model, y_pred
 
 def regression(X_train, X_test, y_train, y_test, accuracy_fn):
@@ -260,5 +337,5 @@ if __name__ == "__main__":
             )
 
     # run classifiers
-    classification( train_feat,test_feat,train_targets,test_targets,accuracy_fn=accuracy_fn,pca_dim=0)
+    classification( train_feat, test_feat, train_targets, test_targets, accuracy_fn=accuracy_fn, pca_dim=0)
     regression(train_clip_feat, test_clip_feat,train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
