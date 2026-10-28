@@ -86,10 +86,10 @@ def regression(X_train, X_test, y_train, y_test, accuracy_fn, model_type="extra_
 
 if __name__ == "__main__":
     experiment_name, max_num_clips, use_dump = "exp_1", 0, False
-    task_type = "regression"  # "classification" or "regression"
+    task_type = "classification"  # "classification", "regression"
 
     opensmile_root_dir = Path("/content/opensmile-2.3.0")
-    opensmile_config_path = opensmile_root_dir / "config/avec2013.conf"
+    opensmile_config_path = opensmile_root_dir / "ComParE_2016.conf"
 
     base_dir = Path("/content/INT/data/OMGEmotionChallenge")
     train_root, test_root = base_dir / "omg_TrainVideos/frames", base_dir / "omg_ValidVideos/frames"
