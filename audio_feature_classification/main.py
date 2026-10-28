@@ -59,6 +59,7 @@ def classification(X_train, X_test, y_train, y_test, accuracy_fn, pca_dim=0, cla
     model = Pipeline(steps + [("classifier", models[classifier])])
     model.fit(X_train, y_train)
     pred = model.predict(X_test)
+    print(f"\n=== {classifier} ===")
     print(classification_report(y_test, pred, zero_division=0))
     accuracy_fn.by_clips(pred)
     return model, pred
@@ -111,4 +112,4 @@ if __name__ == "__main__":
         classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="random_forest")
     else:
         regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="extra_trees")
-        #regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="svr")
+        regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="svr")
