@@ -89,7 +89,7 @@ if __name__ == "__main__":
     task_type = "classification"  # "classification", "regression"
 
     opensmile_root_dir = Path("/content/opensmile-2.3.0")
-    opensmile_config_path = opensmile_root_dir / "config/emobase.conf"
+    opensmile_config_path = opensmile_root_dir / "config/gemaps/eGeMAPSv01a.conf"
 
     base_dir = Path("/content/INT/data/OMGEmotionChallenge")
     train_root, test_root = base_dir / "omg_TrainVideos/frames", base_dir / "omg_ValidVideos/frames"
