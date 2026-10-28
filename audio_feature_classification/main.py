@@ -60,7 +60,7 @@ def classification(X_train, X_test, y_train, y_test, accuracy_fn, pca_dim=0, cla
     model.fit(X_train, y_train)
     pred = model.predict(X_test)
     print(f"\n=== {classifier} ===")
-    print(classification_report(y_test, pred, zero_division=0))
+    #print(classification_report(y_test, pred, zero_division=0))
     accuracy_fn.by_clips(pred)
     return model, pred
 
@@ -86,7 +86,7 @@ def regression(X_train, X_test, y_train, y_test, accuracy_fn, model_type="extra_
 
 if __name__ == "__main__":
     experiment_name, max_num_clips, use_dump = "exp_1", 0, False
-    task_type = "classification"  # "classification" or "regression"
+    task_type = "regression"  # "classification" or "regression"
 
     opensmile_root_dir = Path("/content/opensmile-2.3.0")
     opensmile_config_path = opensmile_root_dir / "config/avec2013.conf"
@@ -108,8 +108,8 @@ if __name__ == "__main__":
 
     if task_type == "classification":
         classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="svm")
-        classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="extra_trees")
-        classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="random_forest")
+        #classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="extra_trees")
+        #classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="random_forest")
     else:
         regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="extra_trees")
         regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="svr")
