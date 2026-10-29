@@ -151,6 +151,8 @@ def train():
         use_mirroring=params["preproc"]["aug"]["use_mirroring"],
         use_random_crop=params["preproc"]["aug"]["use_random_crop"],
         use_center_crop=params["preproc"]["aug"]["use_center_crop"],
+        color=params["preproc"]["aug"]["color"],
+        use_random_gray=params["preproc"]["aug"]["use_random_gray"],
     )
     valid_image_processor = TorchImageProcessor(
         image_size=[
@@ -168,6 +170,8 @@ def train():
         use_center_crop=params["preproc"]["aug"]["pad"] > 0
         or params["preproc"]["crop_size"] != params["preproc"]["data_frame"]["width"]
         or params["preproc"]["crop_size"] != params["preproc"]["data_frame"]["height"],
+        color=params["preproc"]["aug"]["color"],
+        use_random_gray=params["preproc"]["aug"]["use_random_gray"],
     )
 
     # create train image batcher
