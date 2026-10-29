@@ -208,7 +208,7 @@ def train():
             softmax_size,
             depth=params["net"]["depth"],
             data_size=params["preproc"]["data_frame"],
-            pretrain_weight="resnet-34-kinetics.pth",
+            pretrain_weight=None,
         )
     else:
         print("Type net is not supported!")
