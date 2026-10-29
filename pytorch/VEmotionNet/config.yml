@@ -1,12 +1,12 @@
 dataset:
   train:
     server:
-      data_root: /content/OMGEmotionChallenge-master/omg_TrainVideos/frames
-      file_list: /content/OMGEmotionChallenge-master/omg_TrainVideos/train_data_with_landmarks.txt
+      data_root: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/frames
+      file_list: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/train_data_with_landmarks.txt
   valid:
     server:
-      data_root: /content/OMGEmotionChallenge-master/omg_ValidVideos/frames
-      file_list: /content/OMGEmotionChallenge-master/omg_ValidVideos/valid_data_with_landmarks.txt
+      data_root: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/frames
+      file_list: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/valid_data_with_landmarks.txt
 
 seed: 1234
 
