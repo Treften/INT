@@ -43,4 +43,17 @@ class CNNNet(nn.Module):
         self.net = net
 
     def forward(self, data):
+        if data.ndim == 5:
+            data = data.permute(0, 2, 4, 1, 3)
+
+            if data.shape[1] == 1:
+                data = data.squeeze(1)
+            else:
+                raise ValueError(
+                    f"ResNet expects one frame, got depth={data.shape[1]}"
+                )
+
+        elif data.ndim == 4 and data.shape[-1] in (1, 3):
+            data = data.permute(0, 3, 1, 2)
+
         return self.net(data)
