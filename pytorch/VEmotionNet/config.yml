@@ -80,7 +80,7 @@ train:
   experiment_name: EmoV2_step4
 
 losses:
-  CCE:
+  CCC:
     w: 1.
 
 ini_net:
