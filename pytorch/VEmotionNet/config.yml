@@ -57,10 +57,9 @@ batch_proc:
   use_async: yes
 
 opt:
-  type: SGD
-  lr: 0.009
-  momentum: 0.2
-  weight_decay: 5.e-4
+  type: AdamW
+  lr: 0.0003
+  weight_decay: 0.0001
 
 lr_scheduler:
   type: SGDR
