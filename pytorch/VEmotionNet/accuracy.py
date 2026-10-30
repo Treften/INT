@@ -104,8 +104,8 @@ class Accuracy:
         return result
 
     def __call__(self, targets, predict):
-        self.by_frames(targets, predict)
-        return self.by_clips(targets, predict)
+        self.by_frames(predict)
+        return self.by_clips(predict)
 
 
 class Accuracy3D:
