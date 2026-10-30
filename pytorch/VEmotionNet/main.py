@@ -223,7 +223,7 @@ def train():
         net.load_state_dict(torch.load(ini_net))
 
     lr = params["opt"]["lr"]
-    momentum = params["opt"]["momentum"]
+    momentum = params["opt"].get("momentum", 0.0)
     weight_decay = params["opt"]["weight_decay"]
 
     opt_type = params["opt"]["type"]
