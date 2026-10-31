@@ -32,12 +32,12 @@ class CNN3D(nn.Module):
         self.head = nn.Linear(128, output_size)
         
     def forward(self, x):
-        print("3D input:", x.shape)
+        #print("3D input:", x.shape)
         x = self.features(x)
-        print("3D features:", x.shape)
+        #print("3D features:", x.shape)
         x = x.mean(dim=(-1, -2)).transpose(1, 2)
         x = self.head(x)
-        print("3D output:", x.shape)
+        #print("3D output:", x.shape)
         return x.reshape(-1, x.shape[-1])
 
 
