@@ -11,7 +11,7 @@ dataset:
 seed: 1234
 
 net:
-  type: ResNet
+  type: CNN3D
   depth: 18
   softmax_size: 2
   fine_tune: no

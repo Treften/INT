@@ -203,16 +203,15 @@ def train():
     )
 
     net_type = params["net"]["type"]
-    if net_type == "ResNet":
-        net = CNNNet(
-            softmax_size,
-            depth=params["net"]["depth"],
-            data_size=params["preproc"]["data_frame"],
-            pretrain_weight=None,
-        )
-    else:
-        print("Type net is not supported!")
-        exit(0)
+
+    net = CNNNet(
+        softmax_size,
+        depth=params["net"]["depth"],
+        data_size=params["preproc"]["data_frame"],
+        pretrain_weight=None,
+        mode=net_type,
+        in_channels=3 if params["preproc"]["is_color"] else 1,
+    )
 
     loss = TotalLoss(params["losses"], 1, params["train"]["cuda_device"])
 
