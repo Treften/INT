@@ -92,6 +92,7 @@ class NetTrainer:
 
             if self.current_iter % snapshot_iter == 0 and self.current_iter > 0:
                 snapshot_folder = os.path.join(self.snapshot_dir, self.experiment_name)
+                print("save")
                 if not os.path.exists(snapshot_folder):
                     os.makedirs(snapshot_folder)
                 save_path = os.path.join(
@@ -141,6 +142,7 @@ class NetTrainer:
 
             if (not val_data_batcher is None) and self.current_iter % val_iter == 0:
                 model.eval()
+                print("val")
                 self.val(
                     model,
                     val_data_batcher,
