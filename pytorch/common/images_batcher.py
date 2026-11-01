@@ -136,13 +136,14 @@ class ImagesBatcher(AbstractDataBatcher):
         self.fill_task_queue()
 
     def finish(self):
+        print("finish loader")
         for data_reader in self.data_readers:
             data_reader.deactivate()
-
+        print("tasks")
         while not self.task_queue.empty():
             self.task_queue.get()
             self.task_queue.task_done()
-
+        print("alive")
         is_anybody_alive = [
             data_reader.is_alive() for data_reader in self.data_readers
         ].count(True) > 0
@@ -155,7 +156,7 @@ class ImagesBatcher(AbstractDataBatcher):
                 ].count(True) > 0
             except Exception as e:
                 pass
-
+        print("queue empty")
         self.task_queue.join()
         self.batch_queue.join()
         for data_reader in self.data_readers:
