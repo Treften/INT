@@ -99,16 +99,23 @@ class NetTrainer:
                     snapshot_folder,
                     self.experiment_name + "_iter_" + str(self.current_iter) + ".model",
                 )
-                checkpoint = {
-                    "config_data": self.config_data,
-                    "model": model.state_dict(),
-                    "current_iter": self.current_iter,
-                    "optimizer": optimizer.state_dict(),
-                    "scheduler": scheduler.state_dict(),
-                }
-
-                torch.save(checkpoint, save_path)
-
+                '''
+                model.cpu()
+                torch.save(
+                    {
+                        "config_data": self.config_data,
+                        "model": model,
+                        "current_iter": self.current_iter,
+                        "optimizer": optimizer,
+                        "scheduler": scheduler,
+                        "train_data_sampler": train_data_batcher.data_sampler,
+                        "batch_processor": batch_processor,
+                        "loss_function": loss_function,
+                    },
+                    save_path,
+                )
+                model.cuda(self.cuda_id)
+                '''
             current_lr = scheduler.get_lr()
             self.train_summary.add_scalar(
                 "learning_rate", current_lr[0], global_step=self.current_iter
