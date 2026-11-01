@@ -318,6 +318,7 @@ def train():
 
     # lets try to train
     torch.set_num_threads(2)
+    print("train")
     net_trainer.train(
         model=net,
         optimizer=optimizer,
@@ -334,7 +335,7 @@ def train():
         accuracy_function=accuracy_fn,
     )
 
-    # finalize data loader queues
+    print("finish")
     train_images_batcher.finish()
     valid_images_batcher.finish()
 
@@ -445,4 +446,5 @@ def test():
 
 if __name__ == "__main__":
     train()
+    print("test")
     test()
