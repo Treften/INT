@@ -99,7 +99,9 @@ class NetTrainer:
                     snapshot_folder,
                     self.experiment_name + "_iter_" + str(self.current_iter) + ".model",
                 )
+                
                 model.cpu()
+                print("cpu")
                 torch.save(
                     {
                         "config_data": self.config_data,
@@ -114,6 +116,7 @@ class NetTrainer:
                     save_path,
                 )
                 model.cuda(self.cuda_id)
+                print("cuda")
 
             current_lr = scheduler.get_lr()
             self.train_summary.add_scalar(
