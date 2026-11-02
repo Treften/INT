@@ -253,8 +253,6 @@ def classification(
             f"macro-F1={result['macro_f1']:.4f}"
         )
 
-    # Не выбираем лучшую модель по тестовой выборке автоматически.
-    # Для детального отчёта можно указать модель отдельно.
     name = "SVM"
     model = results[name]["model"]
     y_pred = results[name]["pred"]
