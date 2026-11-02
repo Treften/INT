@@ -154,6 +154,7 @@ class NetTrainer:
                     loss_function,
                     accuracy_function,
                 )
+                print("val over")
                 model.train()
 
             self.current_iter += 1
@@ -182,7 +183,7 @@ class NetTrainer:
             targets = np.concatenate((targets, target.cpu().data.numpy()), axis=0)
             predict = np.concatenate((predict, logits.cpu().data.numpy()), axis=0)
             valid_loss += loss.data
-
+        print("val out of loop")
         valid_acc = accuracy_function(targets, predict)
         logger.critical(
             "%s: validate. Iteration: %d: Accuracy (valence, arousal): %.3f%% %.3f%%"
