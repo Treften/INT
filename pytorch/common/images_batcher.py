@@ -137,28 +137,38 @@ class ImagesBatcher(AbstractDataBatcher):
 
     def finish(self):
         print("finish loader")
-
+        for data_reader in self.data_readers:
+            data_reader.deactivate()
+        print("tasks")
+        while not self.task_queue.empty():
+            self.task_queue.get()
+            self.task_queue.task_done()
+        print("alive")
         for reader in self.data_readers:
-            reader.deactivate()
+            print(
+                "PID:", reader.pid,
+                "alive:", reader.is_alive(),
+                "exitcode:", reader.exitcode,
+                flush=True
+            )
 
-        print("waiting readers")
+        print("task queue:", self.task_queue.qsize(), flush=True)
+        print("batch queue:", self.batch_queue.qsize(), flush=True)
+        is_anybody_alive = [
+            data_reader.is_alive() for data_reader in self.data_readers
+        ].count(True) > 0
+        while not self.batch_queue.empty() or is_anybody_alive:
+            try:
+                self.batch_queue.get(timeout=1)
+                self.batch_queue.task_done()
+            except Exception:
+                pass
 
-        for reader in self.data_readers:
-            reader.join(timeout=10)
-
-            if reader.is_alive():
-                print(f"Reader {reader.pid} is stuck, terminating")
-                reader.terminate()
-                reader.join(timeout=5)
-
-        print("draining queues")
-
-        for q in (self.task_queue, self.batch_queue):
-            while True:
-                try:
-                    q.get_nowait()
-                    q.task_done()
-                except Exception:
-                    break
-
-        print("loader finished")
+            is_anybody_alive = any(
+                reader.is_alive() for reader in self.data_readers
+            )
+        print("queue empty")
+        self.task_queue.join()
+        self.batch_queue.join()
+        for data_reader in self.data_readers:
+            data_reader.join()
