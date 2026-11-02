@@ -100,4 +100,4 @@ test:
     test_file_list:
       server: /content/AFEW-VA/crop/test_data_with_landmarks.txt
   cuda_device: 0
-  file_model: /content/aver_log/EmoV2_step40/EmoV2_step40_iter_25000.model
+  file_model: /content/aver_log/EmoV2_step40/EmoV2_step40_iter_200.model
