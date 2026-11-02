@@ -108,7 +108,7 @@ class NetTrainer:
                         "model": model,
                         "current_iter": self.current_iter,
                         "optimizer": optimizer,
-                        #"scheduler": scheduler,
+                        "scheduler": scheduler,
                         #"train_data_sampler": train_data_batcher.data_sampler,
                         #"batch_processor": batch_processor,
                         #"loss_function": loss_function,
