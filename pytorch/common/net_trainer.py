@@ -102,20 +102,20 @@ class NetTrainer:
                 
                 model.cpu()
                 print("cpu")
-                torch.save(
-                    {
-                        "config_data": self.config_data,
-                        "model": model,
-                        "current_iter": self.current_iter,
-                        "optimizer": optimizer,
-                        "scheduler": scheduler,
-                        #"train_data_sampler": train_data_batcher.data_sampler,
-                        "batch_processor": batch_processor,
-                        "loss_function": loss_function,
-                    },
-                    save_path,
-                )
-                print("save")
+                # torch.save(
+                #     {
+                #         "config_data": self.config_data,
+                #         "model": model,
+                #         "current_iter": self.current_iter,
+                #         "optimizer": optimizer,
+                #         "scheduler": scheduler,
+                #         #"train_data_sampler": train_data_batcher.data_sampler,
+                #         #"batch_processor": batch_processor,
+                #         "loss_function": loss_function,
+                #     },
+                #     save_path,
+                # )
+                # print("save")
                 model.cuda(self.cuda_id)
                 print("cuda")
 
