@@ -115,6 +115,7 @@ class NetTrainer:
                     },
                     save_path,
                 )
+                print("save")
                 model.cuda(self.cuda_id)
                 print("cuda")
 
