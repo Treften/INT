@@ -3,14 +3,14 @@ dataset:
     server:
       #data_root: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/frames
       #file_list: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/train_data_with_landmarks.txt
-      data_root: /input/datasets/desfr1t/omg_dataset/omg_TrainVideos/frames
-      file_list: /input/datasets/desfr1t/omg_dataset/omg_TrainVideos/train_data_with_landmarks.txt
+      data_root: /input/datasets/desfr1t/omg-dataset/omg_TrainVideos/frames
+      file_list: /input/datasets/desfr1t/omg-dataset/omg_TrainVideos/train_data_with_landmarks.txt
   valid:
     server:
       #data_root: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/frames
       #file_list: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/valid_data_with_landmarks.txt
-      data_root: /input/datasets/desfr1t/omg_dataset/omg_ValidVideos/frames
-      file_list: /input/datasets/desfr1t/omg_dataset/omg_ValidVideos/valid_data_with_landmarks.txt
+      data_root: /input/datasets/desfr1t/omg-dataset/omg_ValidVideos/frames
+      file_list: /input/datasets/desfr1t/omg-dataset/omg_ValidVideos/valid_data_with_landmarks.txt
 
 seed: 1234
 
