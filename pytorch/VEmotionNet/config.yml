@@ -1,21 +1,21 @@
 dataset:
   train:
     server:
-      #data_root: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/frames
-      #file_list: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/train_data_with_landmarks.txt
-      data_root: ../../input/datasets/desfr1t/omg-dataset/omg_TrainVideos/frames
-      file_list: ../../input/datasets/desfr1t/omg-dataset/omg_TrainVideos/train_data_with_landmarks.txt
+      data_root: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/frames
+      file_list: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/train_data_with_landmarks.txt
+      #data_root: ../../input/datasets/desfr1t/omg-dataset/omg_TrainVideos/frames
+      #file_list: ../../input/datasets/desfr1t/omg-dataset/omg_TrainVideos/train_data_with_landmarks.txt
   valid:
     server:
-      #data_root: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/frames
-      #file_list: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/valid_data_with_landmarks.txt
-      data_root: ../../input/datasets/desfr1t/omg-dataset/omg_ValidVideos/frames
-      file_list: ../../input/datasets/desfr1t/omg-dataset/omg_ValidVideos/valid_data_with_landmarks.txt
+      data_root: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/frames
+      file_list: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/valid_data_with_landmarks.txt
+      #data_root: ../../input/datasets/desfr1t/omg-dataset/omg_ValidVideos/frames
+      #file_list: ../../input/datasets/desfr1t/omg-dataset/omg_ValidVideos/valid_data_with_landmarks.txt
 
 seed: 1234
 
 net:
-  type: CNN3D
+  type: ResNet
   depth: 18
   softmax_size: 2
   fine_tune: no
@@ -77,9 +77,9 @@ train:
   step_size: 100
   step_print: 100
   epoch_size: 50000
-  max_iter: 200
-  validate_iter: 200
-  snapshot_iter: 200
+  max_iter: 5000
+  validate_iter: 1000
+  snapshot_iter: 5000
   experiment_name: EmoV2_step4
 
 losses:
