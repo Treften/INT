@@ -97,20 +97,35 @@ class ImagesBatcher(AbstractDataBatcher):
             logger.error("ImagesBatcher: ", e)
 
     def next_batch(self):
-        """Returns next batch from data."""
         if self.epoch_is_finished and self.batch_queue_balance == 0:
             self.epoch_is_finished = False
             self.fill_task_queue()
             return None
 
-        batch = self.batch_queue.get(block=True)
+        try:
+            batch = self.batch_queue.get(timeout=10)
+        except Exception:
+            print("BATCH TIMEOUT", flush=True)
+            print("balance:", self.batch_queue_balance, flush=True)
+            print("task queue:", self.task_queue.qsize(), flush=True)
+            print("batch queue:", self.batch_queue.qsize(), flush=True)
+
+            for reader in self.data_readers:
+                print(
+                    "reader:", reader.pid,
+                    "alive:", reader.is_alive(),
+                    "exitcode:", reader.exitcode,
+                    flush=True
+                )
+            raise
+
         self.batch_queue.task_done()
         self.batch_queue_balance -= 1
-        if not self.epoch_is_finished:
-            # fill task queue
-            self.fill_task_queue()
-        return batch
 
+        if not self.epoch_is_finished:
+            self.fill_task_queue()
+
+        return batch
     def update_sampler(self, target, logits, step, summary_writer):
         if hasattr(self.data_sampler, "update"):
             labels = target.cpu().data.numpy()

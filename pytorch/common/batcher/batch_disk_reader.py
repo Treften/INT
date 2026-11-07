@@ -22,55 +22,47 @@ class BatchDiskReader(AbstractProcessWorker):
     def do_work_once(self):
         try:
             input_batch = self.in_queue.get(timeout=1)
-        except Exception as e:
-            try:
-                if e is Queue.Empty:
-                    logger.error("Disk_reader: do_work_once() got empty input queue")
-            except:
-                pass
+        except Exception:
             return
 
         try:
             out_samples = []
+
             for data_sample in input_batch.data_samples:
                 try:
-                    # load data
-                    if not self.image_processor is None:
+                    if self.image_processor is not None:
                         image = self.image_processor.process(data_sample.img_rel_path)
                         if image is None:
-                            logger.error(
-                                "BatchDiskReader: cant load image from %s"
-                                % data_sample.img_rel_path
-                            )
+                            logger.error("Cannot load image: %s", data_sample.img_rel_path)
                             continue
                         data_sample.image = image
 
-                    if not self.audio_processor is None:
+                    if self.audio_processor is not None:
                         spec = self.audio_processor.process(data_sample.wav_rel_path)
                         if spec is None:
-                            logger.error(
-                                "BatchDiskReader: cant load wav from %s"
-                                % data_sample.wav_rel_path
-                            )
+                            logger.error("Cannot load wav: %s", data_sample.wav_rel_path)
                             continue
                         data_sample.image = spec
 
                     out_samples.append(data_sample)
-                except Exception as e:
-                    logger.error("BatchDiskReader: %s" % e)
 
-            if not self.audio_processor is None:
-                max_len = max([x.image.size(1) for x in out_samples]) + 1
+                except Exception:
+                    logger.exception("BatchDiskReader: sample processing error")
+
+            if self.audio_processor is not None and out_samples:
+                max_len = max(x.image.size(1) for x in out_samples) + 1
                 hspec = out_samples[0].image.size(0)
+
                 for x in out_samples:
-                    spec_padded = torch.FloatTensor(hspec, max_len)
-                    spec_padded.zero_()
-                    spec_padded[:, : x.image.size(1)] = x.image
+                    spec_padded = torch.zeros(hspec, max_len)
+                    spec_padded[:, :x.image.size(1)] = x.image
                     x.image = spec_padded
 
-            # put data to out queue
             self.out_queue.put(Batch(out_samples))
-        except Exception as e:
-            logger.error("BatchDiskReader: %s" % e)
 
-        self.in_queue.task_done()
+        except Exception:
+            logger.exception("BatchDiskReader: batch processing error")
+            self.out_queue.put(Batch([]))
+
+        finally:
+            self.in_queue.task_done()
