@@ -103,6 +103,13 @@ class ImagesBatcher(AbstractDataBatcher):
             return None
 
         try:
+            print(
+                f"epoch_finished={self.epoch_is_finished}, "
+                f"balance={self.batch_queue_balance}, "
+                f"tasks={self.task_queue.qsize()}, "
+                f"batches={self.batch_queue.qsize()}",
+                flush=True
+            )
             batch = self.batch_queue.get(timeout=10)
         except Exception:
             print("BATCH TIMEOUT", flush=True)
