@@ -171,6 +171,7 @@ class NetTrainer:
         valid_loss = 0
         targets = np.zeros((0, 2), dtype=np.float32)
         predict = np.zeros((0, 2), dtype=np.float32)
+        processed = 0
         while True:
             #print("waiting batch", flush=True)
             batch = val_data_batcher.next_batch()
