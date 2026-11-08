@@ -183,7 +183,8 @@ class NetTrainer:
             logits = model(data)
             loss = loss_function(logits, target)
             processed += len(batch.data_samples)
-            print(f"Validation: {processed}/{42956}", flush=True)
+            if (processed % 3200 == 0):
+                print(f"Validation: {processed}/{42956}", flush=True)
             targets = np.concatenate((targets, target.cpu().data.numpy()), axis=0)
             predict = np.concatenate((predict, logits.cpu().data.numpy()), axis=0)
             valid_loss += loss.data
