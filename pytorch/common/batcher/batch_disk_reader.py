@@ -20,17 +20,17 @@ class BatchDiskReader(AbstractProcessWorker):
         self.audio_processor = audio_processor
 
     def do_work_once(self):
-        print("READER WAIT", self.pid, flush=True)
+        #print("READER WAIT", self.pid, flush=True)
         try:
             input_batch = self.in_queue.get(timeout=1)
         except Exception:
             return
-        print(
-        "READER GOT TASK",
-        self.pid,
-        len(input_batch.data_samples),
-        flush=True
-    )
+    #     print(
+    #     "READER GOT TASK",
+    #     self.pid,
+    #     len(input_batch.data_samples),
+    #     flush=True
+    # )
         try:
             out_samples = []
 
@@ -63,9 +63,9 @@ class BatchDiskReader(AbstractProcessWorker):
                     spec_padded = torch.zeros(hspec, max_len)
                     spec_padded[:, :x.image.size(1)] = x.image
                     x.image = spec_padded
-            print("READER PUT", self.pid, flush=True)
+            #print("READER PUT", self.pid, flush=True)
             self.out_queue.put(Batch(out_samples))
-            print("READER PUT DONE", self.pid, flush=True)
+            #print("READER PUT DONE", self.pid, flush=True)
 
         except Exception:
             logger.exception("BatchDiskReader: batch processing error")

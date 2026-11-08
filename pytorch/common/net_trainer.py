@@ -172,15 +172,17 @@ class NetTrainer:
         targets = np.zeros((0, 2), dtype=np.float32)
         predict = np.zeros((0, 2), dtype=np.float32)
         while True:
-            print("waiting batch", flush=True)
+            #print("waiting batch", flush=True)
             batch = val_data_batcher.next_batch()
             if batch is None:
                 break
-            print("batch received", len(batch.data_samples), flush=True)
+            #print("batch received", len(batch.data_samples), flush=True)
             data, target = batch_processor.pre_processing(batch)
-            print("preprocessing finished", flush=True)
+            #print("preprocessing finished", flush=True)
             logits = model(data)
             loss = loss_function(logits, target)
+            processed += len(batch.data_samples)
+            print(f"Validation: {processed}/{42956}", flush=True)
             targets = np.concatenate((targets, target.cpu().data.numpy()), axis=0)
             predict = np.concatenate((predict, logits.cpu().data.numpy()), axis=0)
             valid_loss += loss.data

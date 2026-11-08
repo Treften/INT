@@ -60,7 +60,7 @@ class ImagesBatcher(AbstractDataBatcher):
 
         # init batch disk readers and start they
         self.data_readers = []
-        print("disk_reader_process_num:", disk_reader_process_num)
+        #print("disk_reader_process_num:", disk_reader_process_num)
         for i in range(disk_reader_process_num):
             self.data_readers.append(
                 BatchDiskReader(
@@ -89,7 +89,7 @@ class ImagesBatcher(AbstractDataBatcher):
                         self.task_queue.put_nowait(batch)
                         self.batch_queue_balance += 1
                     else:
-                        print("BATCHER: EPOCH FINISHED", flush=True)
+                        #print("BATCHER: EPOCH FINISHED", flush=True)
                         self.epoch_is_finished = True
                         break
                 else:
@@ -104,26 +104,26 @@ class ImagesBatcher(AbstractDataBatcher):
             return None
 
         try:
-            print(
-                f"epoch_finished={self.epoch_is_finished}, "
-                f"balance={self.batch_queue_balance}, "
-                f"tasks={self.task_queue.qsize()}, "
-                f"batches={self.batch_queue.qsize()}",
-                flush=True
-            )
-            for reader in self.data_readers:
-                print(
-                    "reader:", reader.pid,
-                    "alive:", reader.is_alive(),
-                    "exitcode:", reader.exitcode,
-                    flush=True
-                )
+            # print(
+            #     f"epoch_finished={self.epoch_is_finished}, "
+            #     f"balance={self.batch_queue_balance}, "
+            #     f"tasks={self.task_queue.qsize()}, "
+            #     f"batches={self.batch_queue.qsize()}",
+            #     flush=True
+            # )
+            #for reader in self.data_readers:
+                # print(
+                #     "reader:", reader.pid,
+                #     "alive:", reader.is_alive(),
+                #     "exitcode:", reader.exitcode,
+                #     flush=True
+                # )
             batch = self.batch_queue.get(timeout=10)
         except Exception:
-            print("BATCH TIMEOUT", flush=True)
-            print("balance:", self.batch_queue_balance, flush=True)
-            print("task queue:", self.task_queue.qsize(), flush=True)
-            print("batch queue:", self.batch_queue.qsize(), flush=True)
+            # print("BATCH TIMEOUT", flush=True)
+            # print("balance:", self.batch_queue_balance, flush=True)
+            # print("task queue:", self.task_queue.qsize(), flush=True)
+            # print("batch queue:", self.batch_queue.qsize(), flush=True)
 
 
             raise
@@ -160,24 +160,24 @@ class ImagesBatcher(AbstractDataBatcher):
         self.fill_task_queue()
 
     def finish(self):
-        print("finish loader")
+        #print("finish loader")
         for data_reader in self.data_readers:
             data_reader.deactivate()
-        print("tasks")
+        #print("tasks")
         while not self.task_queue.empty():
             self.task_queue.get()
             self.task_queue.task_done()
-        print("alive")
-        for reader in self.data_readers:
-            print(
-                "PID:", reader.pid,
-                "alive:", reader.is_alive(),
-                "exitcode:", reader.exitcode,
-                flush=True
-            )
+        #print("alive")
+        #for reader in self.data_readers:
+            # print(
+            #     "PID:", reader.pid,
+            #     "alive:", reader.is_alive(),
+            #     "exitcode:", reader.exitcode,
+            #     flush=True
+            # )
 
-        print("task queue:", self.task_queue.qsize(), flush=True)
-        print("batch queue:", self.batch_queue.qsize(), flush=True)
+        #print("task queue:", self.task_queue.qsize(), flush=True)
+        #print("batch queue:", self.batch_queue.qsize(), flush=True)
         is_anybody_alive = [
             data_reader.is_alive() for data_reader in self.data_readers
         ].count(True) > 0
@@ -191,7 +191,7 @@ class ImagesBatcher(AbstractDataBatcher):
             is_anybody_alive = any(
                 reader.is_alive() for reader in self.data_readers
             )
-        print("queue empty")
+        #print("queue empty")
         self.task_queue.join()
         self.batch_queue.join()
         for data_reader in self.data_readers:
