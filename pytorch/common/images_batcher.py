@@ -110,13 +110,6 @@ class ImagesBatcher(AbstractDataBatcher):
                 f"batches={self.batch_queue.qsize()}",
                 flush=True
             )
-            batch = self.batch_queue.get(timeout=10)
-        except Exception:
-            print("BATCH TIMEOUT", flush=True)
-            print("balance:", self.batch_queue_balance, flush=True)
-            print("task queue:", self.task_queue.qsize(), flush=True)
-            print("batch queue:", self.batch_queue.qsize(), flush=True)
-
             for reader in self.data_readers:
                 print(
                     "reader:", reader.pid,
@@ -124,6 +117,14 @@ class ImagesBatcher(AbstractDataBatcher):
                     "exitcode:", reader.exitcode,
                     flush=True
                 )
+            batch = self.batch_queue.get(timeout=10)
+        except Exception:
+            print("BATCH TIMEOUT", flush=True)
+            print("balance:", self.batch_queue_balance, flush=True)
+            print("task queue:", self.task_queue.qsize(), flush=True)
+            print("batch queue:", self.batch_queue.qsize(), flush=True)
+
+
             raise
 
         self.batch_queue.task_done()
