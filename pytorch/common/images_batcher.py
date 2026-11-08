@@ -89,6 +89,7 @@ class ImagesBatcher(AbstractDataBatcher):
                         self.task_queue.put_nowait(batch)
                         self.batch_queue_balance += 1
                     else:
+                        print("BATCHER: EPOCH FINISHED", flush=True)
                         self.epoch_is_finished = True
                         break
                 else:

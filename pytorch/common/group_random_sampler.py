@@ -108,8 +108,16 @@ class GroupRandomSampler(AbstractDataSampler):
         return batch_data
 
     def sampling(self, batch_size, external_info=None):
+        print(
+            f"SAMPLER: idx={self.current_idx}, "
+            f"size={self.dataset_size}, "
+            f"last={self.is_last_batch}, "
+            f"single={getattr(external_info, 'single_epoch', False)}",
+            flush=True
+        )
         if self.is_last_batch:
             # got last batch. Reset state and return None batch
+            print("SAMPLER: END OF EPOCH", flush=True)
             self.is_last_batch = False
             return None
 
