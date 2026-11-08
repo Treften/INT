@@ -77,8 +77,8 @@ train:
   step_size: 100
   step_print: 100
   epoch_size: 50000
-  max_iter: 9000
-  validate_iter: 999
+  max_iter: 8000
+  validate_iter: 1000
   snapshot_iter: 5000
   experiment_name: EmoV2_step4
 
