@@ -182,7 +182,7 @@ def calc_features(data, draw: bool = False):
 
 
 
-def draw(points2D, targets, sawe=True):
+def draw(points2D, targets, name, sawe=True):
     fig, ax = plt.subplots(figsize=(10, 8))
 
     scatter = ax.scatter(
@@ -194,12 +194,12 @@ def draw(points2D, targets, sawe=True):
         alpha=0.7
     )
 
-    ax.set_title("t-SNE visualization")
-    ax.set_xlabel("t-SNE 1")
-    ax.set_ylabel("t-SNE 2")
+    ax.set_title(name + " visualization")
+    ax.set_xlabel(name + " 1")
+    ax.set_ylabel(name +" 2")
     fig.colorbar(scatter, ax=ax, label="Target label")
 
-    output_path = Path("/content/INT/scatter.png")
+    output_path = Path("/content/INT/"+name+".png")
     fig.savefig(output_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
 
@@ -235,8 +235,8 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
         w.fit(pij, i, j, offset=itr)
         # Visualize the results
     tsne_result = model.logits.weight.cpu().data.numpy()
-    draw(pca_result, targets)
-    draw(tsne_result, targets)
+    draw(pca_result, targets, "PCA")
+    draw(tsne_result, targets, "t-SNE")
     compare_class_separation(pca_result, targets, "PCA")
     compare_class_separation(tsne_result, targets, "t-SNE")
 
