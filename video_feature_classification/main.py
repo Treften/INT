@@ -187,7 +187,7 @@ def classification(
     accuracy_fn=None, pca_dim=0,
 ):
     models = {
-        "SVM": make_pipeline(
+        '''"SVM": make_pipeline(
             StandardScaler(),
             *([PCA(n_components=min(
                 pca_dim, X_train.shape[1], X_train.shape[0] - 1
@@ -207,7 +207,7 @@ def classification(
             class_weight="balanced",
             random_state=42,
             n_jobs=-1,
-        ),
+        ),'''
         "Random Forest": RandomForestClassifier(
             n_estimators=400,
             min_samples_leaf=2,
