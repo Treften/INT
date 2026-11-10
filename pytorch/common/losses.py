@@ -7,6 +7,7 @@ class TotalLoss(nn.Module):
         super().__init__()
         self.loss_param = loss_param
         self.mse = nn.MSELoss()
+        self.mae = nn.L1Loss()
 
     @staticmethod
     def ccc_loss(logits, targets, eps=1e-8):
@@ -38,7 +39,8 @@ class TotalLoss(nn.Module):
             #print("MSE weight:", type(self.loss_param["MSE"]["w"]), self.loss_param["MSE"]["w"])
             #print("MSE:", self.mse)
             loss = loss + float(self.loss_param["MSE"]["w"]) * self.mse(logits, targets)
-
+        if "MAE" in self.loss_param:
+            loss = loss + float(self.loss_param["MAE"]["w"]) * self.mae(logits, targets)
         if "CCC" in self.loss_param:
             loss = loss + self.loss_param["CCC"]["w"] * self.ccc_loss(logits, targets)
 

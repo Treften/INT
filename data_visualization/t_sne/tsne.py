@@ -13,17 +13,13 @@ class TSNE(nn.Module):
         yj = self.logits(j)
 
         dist_sq = ((yi - yj) ** 2).sum(dim=-1)
-
         similarity = 1.0 / (1.0 + dist_sq)
-
         qij = similarity / similarity.sum()
-
         pij = pij / pij.sum()
 
         eps = 1e-12
         pij = pij.clamp_min(eps)
         qij = qij.clamp_min(eps)
-
         loss_kld = pij * log(pij / qij)
 
         return loss_kld.sum()

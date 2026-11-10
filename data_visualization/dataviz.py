@@ -121,29 +121,23 @@ def calc_features(data, draw: bool = False):
             for j in range(len(sample.landmarks)):
                 lm = sample.landmarks[j]
                 nose_dist.append(np.sqrt((lm_ref[0] - lm[0]) ** 2 + (lm_ref[1] - lm[1]) ** 2))
-            #feat.append(nose_dist)
+            feat.append(nose_dist)
             targets.append(sample.labels)
 
             face_width = np.linalg.norm(landmarks[0] - landmarks[16])
             face_height = dist(27, 8) + 1e-8
-
             mouth_width = dist(landmarks[48], landmarks[54])
             mouth_height = dist(landmarks[51], landmarks[57])
-
             eye_left_width = dist(36, 39)
             eye_right_width = dist(42, 45)
             eye_left_height = (dist(37, 41) + dist(38, 40)) / 2
             eye_right_height = (dist(43, 47) + dist(44, 46)) / 2
-
             brow_left_height = dist(21, 39)
             brow_right_height = dist(22, 42)
             brow_distance = dist(21, 22)
             nose_width = dist(31, 35)
             nose_to_mouth = dist(33, 51)
 
-            # mouth_corner_y = (
-            #     (lm[48, 1] + lm[54, 1]) / 2 - lm[51, 1]
-            # ) / face_width
             symmetry = np.mean([
                 abs(dist(36, 48) - dist(45, 54)),
                 abs(dist(39, 48) - dist(42, 54)),
@@ -164,19 +158,18 @@ def calc_features(data, draw: bool = False):
                 brow_distance / face_width,
                 nose_width / face_width,
                 nose_to_mouth / face_height,
-                angle(landmarks, 48, 51, 54),
-                angle(landmarks, 36, 39, 42),
-                angle(landmarks, 39, 42, 45),
-                symmetry,
+                #angle(landmarks, 48, 51, 54),
+                #angle(landmarks, 36, 39, 42),
+                #angle(landmarks, 39, 42, 45),
+                #symmetry,
             ], dtype=np.float32)
 
-#symmetry,
             features = np.concatenate([
                 features.flatten(),
                 geometry,
             ])
 
-            feat.append(features)
+            #feat.append(features)
             if draw:
                 img = cv2.cv.LoadImage(sample.img_rel_path)
                 for lm in sample.landmarks:
