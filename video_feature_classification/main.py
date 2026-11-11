@@ -144,8 +144,8 @@ def calc_features(data):
                     delta.flatten(),
                     np.abs(delta).mean(axis=0),
                 ])
-
-                feature = np.concatenate([base, temporal])
+                feature = temporal
+                #feature = np.concatenate([base, temporal])
 
                 if not np.isfinite(feature).all():
                     rm_list.append(sample)
