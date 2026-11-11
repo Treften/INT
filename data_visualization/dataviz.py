@@ -169,7 +169,7 @@ def calc_features(data, draw: bool = False):
                 geometry,
             ])
 
-            #feat.append(features)
+            feat.append(features)
             if draw:
                 img = cv2.cv.LoadImage(sample.img_rel_path)
                 for lm in sample.landmarks:
