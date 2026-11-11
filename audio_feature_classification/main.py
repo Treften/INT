@@ -11,6 +11,8 @@ from sklearn.decomposition import PCA
 from sklearn.svm import SVC, SVR
 from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor, RandomForestClassifier
 from sklearn.multioutput import MultiOutputRegressor
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, mean_absolute_error
 
 sys.path.append("../")
@@ -53,6 +55,8 @@ def classification(X_train, X_test, y_train, y_test, accuracy_fn, pca_dim=0, cla
         "svm": SVC(kernel="rbf", C=3, class_weight="balanced"),
         "extra_trees": ExtraTreesClassifier(n_estimators=500, class_weight="balanced", random_state=42, n_jobs=-1),
         "random_forest": RandomForestClassifier(n_estimators=500, class_weight="balanced", random_state=42, n_jobs=-1),
+        "Logistic Regression": make_pipeline(StandardScaler(),LogisticRegression(C=1.0, max_iter=3000, class_weight="balanced"),),
+        "KNN": make_pipeline(StandardScaler(),KNeighborsClassifier(n_neighbors=15, weights="distance"),),
     }
     if classifier not in models:
         raise ValueError(f"Unknown classifier: {classifier}")
