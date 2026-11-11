@@ -121,7 +121,7 @@ def calc_features(data, draw: bool = False):
             for j in range(len(sample.landmarks)):
                 lm = sample.landmarks[j]
                 nose_dist.append(np.sqrt((lm_ref[0] - lm[0]) ** 2 + (lm_ref[1] - lm[1]) ** 2))
-            feat.append(nose_dist)
+            #feat.append(nose_dist)
             targets.append(sample.labels)
 
             face_width = np.linalg.norm(landmarks[0] - landmarks[16])
@@ -147,25 +147,25 @@ def calc_features(data, draw: bool = False):
 
             features = (landmarks - lm_ref) / (face_width + 1e-8)
             geometry = np.asarray([
-                mouth_width / face_width,
-                mouth_height / (mouth_width + 1e-8),
-                eye_left_width / face_width,
-                eye_right_width / face_width,
-                eye_left_height / (eye_left_width + 1e-8),
-                eye_right_height / (eye_right_width + 1e-8),
-                brow_left_height / face_height,
-                brow_right_height / face_height,
-                brow_distance / face_width,
-                nose_width / face_width,
-                nose_to_mouth / face_height,
-                #angle(landmarks, 48, 51, 54),
-                #angle(landmarks, 36, 39, 42),
-                #angle(landmarks, 39, 42, 45),
-                #symmetry,
+                # mouth_width / face_width,
+                # mouth_height / (mouth_width + 1e-8),
+                # eye_left_width / face_width,
+                # eye_right_width / face_width,
+                # eye_left_height / (eye_left_width + 1e-8),
+                # eye_right_height / (eye_right_width + 1e-8),
+                # brow_left_height / face_height,
+                # brow_right_height / face_height,
+                # brow_distance / face_width,
+                # nose_width / face_width,
+                # nose_to_mouth / face_height,
+                angle(landmarks, 48, 51, 54),
+                angle(landmarks, 36, 39, 42),
+                angle(landmarks, 39, 42, 45),
+                symmetry,
             ], dtype=np.float32)
 
             features = np.concatenate([
-                features.flatten(),
+                #features.flatten(),
                 geometry,
             ])
 
