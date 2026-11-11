@@ -188,27 +188,27 @@ def classification(
     accuracy_fn=None, pca_dim=0,
 ):
     models = {
-        # "SVM": make_pipeline(
-        #     StandardScaler(),
-        #     *([PCA(n_components=min(
-        #         pca_dim, X_train.shape[1], X_train.shape[0] - 1
-        #     ))] if pca_dim > 0 else []),
-        #     SVC(C=3.0, kernel="rbf", class_weight="balanced"),
-        # ),
+        "SVM": make_pipeline(
+            StandardScaler(),
+            *([PCA(n_components=min(
+                pca_dim, X_train.shape[1], X_train.shape[0] - 1
+            ))] if pca_dim > 0 else []),
+            SVC(C=3.0, kernel="rbf", class_weight="balanced"),
+        ),
         # "Logistic Regression": make_pipeline(
         #     StandardScaler(),
         #     LogisticRegression(
         #         C=1.0, max_iter=3000, class_weight="balanced"
         #     ),
         # ),
-        "Extra Trees": ExtraTreesClassifier(
-            n_estimators=400,
-            min_samples_leaf=2,
-            max_features=0.8,
-            class_weight="balanced",
-            random_state=42,
-            n_jobs=-1,
-        ),
+        # "Extra Trees": ExtraTreesClassifier(
+        #     n_estimators=400,
+        #     min_samples_leaf=2,
+        #     max_features=0.8,
+        #     class_weight="balanced",
+        #     random_state=42,
+        #     n_jobs=-1,
+        # ),
         # "Random Forest": RandomForestClassifier(
         #     n_estimators=400,
         #     min_samples_leaf=2,
@@ -262,7 +262,7 @@ def classification(
             f"macro-F1={result['macro_f1']:.4f}"
         )
 
-    name = "Extra Trees"
+    name = "SVM"
     model = results[name]["model"]
     y_pred = results[name]["pred"]
 
