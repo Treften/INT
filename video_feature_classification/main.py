@@ -338,4 +338,4 @@ if __name__ == "__main__":
 
     # run classifiers
     classification( train_feat, test_feat, train_targets, test_targets, accuracy_fn=accuracy_fn, pca_dim=0)
-    regression(train_clip_feat, test_clip_feat,train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
+    regression(train_clip_feat, test_clip_feat, train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
