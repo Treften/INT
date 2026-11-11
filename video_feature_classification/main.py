@@ -200,7 +200,7 @@ def classification(
             LogisticRegression(
                 C=1.0, max_iter=3000, class_weight="balanced"
             ),
-        ),
+        ),'''
         "Extra Trees": ExtraTreesClassifier(
             n_estimators=400,
             min_samples_leaf=2,
@@ -208,18 +208,18 @@ def classification(
             class_weight="balanced",
             random_state=42,
             n_jobs=-1,
-        ),'''
-        "Random Forest": RandomForestClassifier(
-            n_estimators=400,
-            min_samples_leaf=2,
-            class_weight="balanced_subsample",
-            random_state=42,
-            n_jobs=-1,
         ),
-        "KNN": make_pipeline(
-            StandardScaler(),
-            KNeighborsClassifier(n_neighbors=15, weights="distance"),
-        ),
+        # "Random Forest": RandomForestClassifier(
+        #     n_estimators=400,
+        #     min_samples_leaf=2,
+        #     class_weight="balanced_subsample",
+        #     random_state=42,
+        #     n_jobs=-1,
+        # ),
+        # "KNN": make_pipeline(
+        #     StandardScaler(),
+        #     KNeighborsClassifier(n_neighbors=15, weights="distance"),
+        # ),
     }
 
     results = {}
@@ -262,7 +262,7 @@ def classification(
             f"macro-F1={result['macro_f1']:.4f}"
         )
 
-    name = "SVM"
+    name = "Extra Trees"
     model = results[name]["model"]
     y_pred = results[name]["pred"]
 
