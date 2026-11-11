@@ -188,7 +188,7 @@ def classification(
     accuracy_fn=None, pca_dim=0,
 ):
     models = {
-        "SVM": make_pipeline(
+        '''"SVM": make_pipeline(
             StandardScaler(),
             *([PCA(n_components=min(
                 pca_dim, X_train.shape[1], X_train.shape[0] - 1
@@ -208,7 +208,7 @@ def classification(
             class_weight="balanced",
             random_state=42,
             n_jobs=-1,
-        ),
+        ),'''
         "Random Forest": RandomForestClassifier(
             n_estimators=400,
             min_samples_leaf=2,
@@ -228,19 +228,19 @@ def classification(
         pred = model.predict(X_test)
 
         results[name] = {
-            "model": model,
-            "pred": pred,
-            "accuracy": accuracy_score(y_test, pred),
-            "precision": precision_score(
-                y_test, pred, average="macro", zero_division=0
-            ),
-            "recall": recall_score(
-                y_test, pred, average="macro", zero_division=0
-            ),
-            "macro_f1": f1_score(
-                y_test, pred, average="macro", zero_division=0
-            ),
-        }
+        "model": model,
+        "pred": pred,
+        "accuracy": accuracy_score(y_test, pred),
+        "precision": precision_score(
+            y_test, pred, average="macro", zero_division=0
+        ),
+        "recall": recall_score(
+            y_test, pred, average="macro", zero_division=0
+        ),
+        "macro_f1": f1_score(
+            y_test, pred, average="macro", zero_division=0
+        ),
+    }
 
         print(
             f"\n{name}: "
@@ -259,18 +259,14 @@ def classification(
         print(
             f"{name:22s} "
             f"accuracy={result['accuracy']:.4f} "
-            f"precision={result['precision']:.4f} "
-            f"recall={result['recall']:.4f} "
             f"macro-F1={result['macro_f1']:.4f}"
         )
 
-    best_name = max(
-        results, key=lambda name: results[name]["macro_f1"]
-    )
-    model = results[best_name]["model"]
-    y_pred = results[best_name]["pred"]
+    name = "SVM"
+    model = results[name]["model"]
+    y_pred = results[name]["pred"]
 
-    print(f"\nClassification report: {best_name}")
+    print(f"\nClassification report: {name}")
     print(classification_report(
         y_test, y_pred, zero_division=0
     ))
