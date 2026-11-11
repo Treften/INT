@@ -83,10 +83,8 @@ train:
   experiment_name: EmoV2_step4
 
 losses:
-  CCC:
-    w: 0.5
   MAE:
-    w: 0.5
+    w: 1
 
 ini_net:
   server: /content/INT/pytorch/VEmotionNet/EmoV2_step4/EmoV2_step4_iter_14500.model
