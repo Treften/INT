@@ -109,7 +109,7 @@ def regression(X_train, X_test, y_train, y_test, accuracy_fn, model_type="extra_
 
 if __name__ == "__main__":
     experiment_name, max_num_clips, use_dump = "exp_1", 0, False
-    task_type = "classification"  # "classification", "regression"
+    task_type = "regression"  # "classification", "regression"
 
     opensmile_root_dir = Path("/content/opensmile-2.3.0")
     opensmile_config_path = opensmile_root_dir / "config/avec2013.conf"
