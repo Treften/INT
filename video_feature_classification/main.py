@@ -297,10 +297,7 @@ def regression(X_train, X_test, y_train, y_test, accuracy_fn):
                 n_jobs=-1,
             ),
         ),
-        "SVR (RBF)": make_pipeline(
-            StandardScaler(),
-            SVR(kernel='rbf', C=1.0, epsilon=0.1),
-        ),
+        "svr": make_pipeline(StandardScaler(), MultiOutputRegressor(SVR(kernel="rbf", C=3, epsilon=0.1))),
         "Ridge": make_pipeline(
             StandardScaler(),
             Ridge(alpha=1.0),

@@ -112,8 +112,10 @@ if __name__ == "__main__":
 
     if task_type == "classification":
         classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="svm")
-        #classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="extra_trees")
-        #classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="random_forest")
+        classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="extra_trees")
+        classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="random_forest")
+        classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="Logistic Regression")
+        classification(train_feat, test_feat, train_y, test_y, accuracy_fn, classifier="KNN")
     else:
         regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="extra_trees")
         regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="svr")
