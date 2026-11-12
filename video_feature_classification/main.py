@@ -282,7 +282,7 @@ def regression(X_train, X_test, y_train, y_test, accuracy_fn):
         "Extra Trees": make_pipeline(
             StandardScaler(),
             ExtraTreesRegressor(
-                n_estimators=300,
+                n_estimators=400,
                 min_samples_leaf=2,
                 random_state=42,
                 n_jobs=-1,
@@ -291,7 +291,7 @@ def regression(X_train, X_test, y_train, y_test, accuracy_fn):
         "Random Forest": make_pipeline(
             StandardScaler(),
             RandomForestRegressor(
-                n_estimators=300,
+                n_estimators=400,
                 min_samples_leaf=2,
                 random_state=42,
                 n_jobs=-1,
@@ -304,7 +304,7 @@ def regression(X_train, X_test, y_train, y_test, accuracy_fn):
         ),
         "KNN": make_pipeline(
             StandardScaler(),
-            KNeighborsRegressor(n_neighbors=5, weights='distance'),
+            KNeighborsRegressor(n_neighbors=15, weights='distance'),
         ),
     }
 
