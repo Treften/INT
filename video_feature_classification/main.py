@@ -24,7 +24,8 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+from sklearn.ensemble import RandomForestRegressor, Ridge
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 
 def get_data(dataset_root, file_list, max_num_clips=0, max_num_samples=50):
@@ -278,28 +279,76 @@ def classification(
     return model, y_pred
 
 def regression(X_train, X_test, y_train, y_test, accuracy_fn):
-    model = make_pipeline(
-        StandardScaler(),
-        ExtraTreesRegressor(
-            n_estimators=300,
-            min_samples_leaf=2,
-            random_state=42,
-            n_jobs=-1,
+    models = {
+        "Extra Trees": make_pipeline(
+            StandardScaler(),
+            ExtraTreesRegressor(
+                n_estimators=300,
+                min_samples_leaf=2,
+                random_state=42,
+                n_jobs=-1,
+            ),
         ),
-    )
+        "Random Forest": make_pipeline(
+            StandardScaler(),
+            RandomForestRegressor(
+                n_estimators=300,
+                min_samples_leaf=2,
+                random_state=42,
+                n_jobs=-1,
+            ),
+        ),
+        "SVR (RBF)": make_pipeline(
+            StandardScaler(),
+            SVR(kernel='rbf', C=1.0, epsilon=0.1),
+        ),
+        "Ridge": make_pipeline(
+            StandardScaler(),
+            Ridge(alpha=1.0),
+        ),
+        "KNN": make_pipeline(
+            StandardScaler(),
+            KNeighborsRegressor(n_neighbors=5, weights='distance'),
+        ),
+    }
 
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+    results = {}
+    
+    for name, model in models.items():
+        print(f"\nОбучение модели: {name}...")
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
 
-    for i, name in enumerate(["Valence", "Arousal"]):
-        print(
-            f"{name}: MAE={mean_absolute_error(y_test[:, i], y_pred[:, i]):.4f}, "
-            f"RMSE={np.sqrt(mean_squared_error(y_test[:, i], y_pred[:, i])):.4f}, "
-            f"R2={r2_score(y_test[:, i], y_pred[:, i]):.4f}"
-        )
+        metrics = {}
+        for i, emotion in enumerate(["Valence", "Arousal"]):
+            mae = mean_absolute_error(y_test[:, i], y_pred[:, i])
+            rmse = np.sqrt(mean_squared_error(y_test[:, i], y_pred[:, i]))
+            r2 = r2_score(y_test[:, i], y_pred[:, i])
+            
+            metrics[emotion] = {"MAE": mae, "RMSE": rmse, "R2": r2}
+            print(
+                f"  {emotion}: MAE={mae:.4f}, "
+                f"RMSE={rmse:.4f}, R2={r2:.4f}"
+            )
 
-    accuracy_fn.by_clips(y_test, y_pred)
-    return model, y_pred
+        avg_r2 = np.mean([metrics["Valence"]["R2"], metrics["Arousal"]["R2"]])
+        avg_rmse = np.mean([metrics["Valence"]["RMSE"], metrics["Arousal"]["RMSE"]])
+        avg_mae = np.mean([metrics["Valence"]["MAE"], metrics["Arousal"]["MAE"]])
+
+        results[name] = {
+            "model": model,
+            "pred": y_pred,
+            "metrics": metrics,
+            "avg_r2": avg_r2,
+            "avg_rmse": avg_rmse,
+            "avg_mae": avg_mae
+        }
+
+    print("\n" + "="*80)
+    print("СРАВНЕНИЕ МОДЕЛЕЙ РЕГРЕССИИ")
+    print("="*80)
+    print(f"{'Модель':<15} | {'Ср. R2':<10} | {'Ср. RMSE':<10} | {'Ср. MAE':<10} | {'Val R2':<10} | {'Aro R2':<10}")
+    print("-" * 80)
 
 if __name__ == "__main__":
     experiment_name = "exp_1"
@@ -337,5 +386,5 @@ if __name__ == "__main__":
             )
 
     # run classifiers
-    classification( train_feat, test_feat, train_targets, test_targets, accuracy_fn=accuracy_fn, pca_dim=0)
+    #classification( train_feat, test_feat, train_targets, test_targets, accuracy_fn=accuracy_fn, pca_dim=0)
     regression(train_clip_feat, test_clip_feat, train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
