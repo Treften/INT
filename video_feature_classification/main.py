@@ -18,12 +18,11 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import precision_score, recall_score
 from sklearn.decomposition import PCA
-from sklearn.svm import SVC
-from sklearn.ensemble import ExtraTreesRegressor
+from sklearn.svm import SVC, SVR
+from sklearn.ensemble import ExtraTreesRegressor, RandomForestClassifier, ExtraTreesClassifier
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.linear_model import LogisticRegression, Ridge
-from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import accuracy_score, f1_score, classification_report
