@@ -10,9 +10,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.svm import SVC, SVR
 from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor, RandomForestClassifier
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.multioutput import MultiOutputRegressor
-from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression, Ridge
+from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import classification_report, mean_absolute_error
 
 sys.path.append("../")
@@ -75,7 +77,24 @@ def regression(X_train, X_test, y_train, y_test, accuracy_fn, model_type="extra_
     X_train[~np.isfinite(X_train)], X_test[~np.isfinite(X_test)] = np.nan, np.nan
     models = {
         "extra_trees": ExtraTreesRegressor(n_estimators=500, min_samples_leaf=2, random_state=42, n_jobs=-1),
-        "svr": make_pipeline(StandardScaler(), MultiOutputRegressor(SVR(kernel="rbf", C=3, epsilon=0.1))),
+        "Random Forest": make_pipeline(
+                    StandardScaler(),
+                    RandomForestRegressor(
+                        n_estimators=500,
+                        min_samples_leaf=2,
+                        random_state=42,
+                        n_jobs=-1,
+                    ),
+                ),
+                "svr": make_pipeline(StandardScaler(), MultiOutputRegressor(SVR(kernel="rbf", C=3, epsilon=0.1))),
+                "Ridge": make_pipeline(
+                    StandardScaler(),
+                    Ridge(alpha=1.0),
+                ),
+                "KNN": make_pipeline(
+                    StandardScaler(),
+                    KNeighborsRegressor(n_neighbors=5, weights='distance'),
+                ),
     }
     if model_type not in models:
         raise ValueError(f"Unknown regressor: {model_type}")
@@ -119,3 +138,6 @@ if __name__ == "__main__":
     else:
         regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="extra_trees")
         regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="svr")
+        regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="Random Forest")
+        regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="Ridge")
+        regression(train_feat, test_feat, train_y, test_y, accuracy_fn, model_type="KNN")
