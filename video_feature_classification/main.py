@@ -22,10 +22,10 @@ from sklearn.svm import SVC
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.multioutput import MultiOutputRegressor
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, Ridge
 from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
-from sklearn.ensemble import RandomForestRegressor, Ridge
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 
 def get_data(dataset_root, file_list, max_num_clips=0, max_num_samples=50):
