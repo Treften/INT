@@ -74,7 +74,14 @@ class CNNNet(nn.Module):
                 raise ValueError(f"Unsupported ResNet depth: {depth}")
 
             net.fc = nn.Linear(net.fc.in_features, num_classes)
+            for param in net.parameters():
+                param.requires_grad = False
 
+            for param in net.layer4.parameters():
+                param.requires_grad = True
+
+            for param in net.fc.parameters():
+                param.requires_grad = True
             if pretrain_weight:
                 checkpoint = torch.load(
                     pretrain_weight,
