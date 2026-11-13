@@ -1,7 +1,7 @@
 
 import torch
 import torch.nn as nn
-from torchvision.models import resnet18, resnet34
+from torchvision.models import resnet18, resnet34, ResNet18_Weights, ResNet34_Weights
 
 
 class CNN3D(nn.Module):
@@ -55,10 +55,21 @@ class CNNNet(nn.Module):
             )
 
         elif mode == "ResNet":
+            # if depth == 18:
+            #     net = resnet18(weights=None)
+            # elif depth == 34:
+            #     net = resnet34(weights=None)
+            # else:
+            #     raise ValueError(f"Unsupported ResNet depth: {depth}")
+
             if depth == 18:
-                net = resnet18(weights=None)
+                weights = None if pretrain_weight else ResNet18_Weights.DEFAULT
+                net = resnet18(weights=weights)
+
             elif depth == 34:
-                net = resnet34(weights=None)
+                weights = None if pretrain_weight else ResNet34_Weights.DEFAULT
+                net = resnet34(weights=weights)
+
             else:
                 raise ValueError(f"Unsupported ResNet depth: {depth}")
 
