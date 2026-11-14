@@ -55,33 +55,33 @@ class CNNNet(nn.Module):
             )
 
         elif mode == "ResNet":
-            # if depth == 18:
-            #     net = resnet18(weights=None)
-            # elif depth == 34:
-            #     net = resnet34(weights=None)
-            # else:
-            #     raise ValueError(f"Unsupported ResNet depth: {depth}")
-
             if depth == 18:
-                weights = None if pretrain_weight else ResNet18_Weights.DEFAULT
-                net = resnet18(weights=weights)
-
+                net = resnet18(weights=None)
             elif depth == 34:
-                weights = None if pretrain_weight else ResNet34_Weights.DEFAULT
-                net = resnet34(weights=weights)
-
+                net = resnet34(weights=None)
             else:
                 raise ValueError(f"Unsupported ResNet depth: {depth}")
 
+            # if depth == 18:
+            #     weights = None if pretrain_weight else ResNet18_Weights.DEFAULT
+            #     net = resnet18(weights=weights)
+
+            # elif depth == 34:
+            #     weights = None if pretrain_weight else ResNet34_Weights.DEFAULT
+            #     net = resnet34(weights=weights)
+
+            # else:
+            #     raise ValueError(f"Unsupported ResNet depth: {depth}")
+
             net.fc = nn.Linear(net.fc.in_features, num_classes)
-            for param in net.parameters():
-                param.requires_grad = False
+            # for param in net.parameters():
+            #     param.requires_grad = False
 
-            for param in net.layer4.parameters():
-                param.requires_grad = True
+            # for param in net.layer4.parameters():
+            #     param.requires_grad = True
 
-            for param in net.fc.parameters():
-                param.requires_grad = True
+            # for param in net.fc.parameters():
+            #     param.requires_grad = True
             if pretrain_weight:
                 checkpoint = torch.load(
                     pretrain_weight,
