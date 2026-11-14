@@ -44,7 +44,7 @@ preproc:
 
 sampler:
   samples_is_randomize: no
-  step_size_for_samples: 2
+  step_size_for_samples: 1
 
 train_batcher:
   batch: 32
