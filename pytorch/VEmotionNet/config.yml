@@ -36,11 +36,11 @@ preproc:
   aug:
     pad: 28
     color: BGR
-    use_cutout: false
-    use_mirroring: true
-    use_random_crop: false
+    use_cutout: true
+    use_mirroring: false
+    use_random_crop: true
     use_center_crop: false
-    use_random_gray: true
+    use_random_gray: false
 
 sampler:
   samples_is_randomize: no
