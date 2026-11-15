@@ -40,11 +40,11 @@ preproc:
     use_mirroring: true
     use_random_crop: false
     use_center_crop: false
-    use_random_gray: false
+    use_random_gray: true
 
 sampler:
   samples_is_randomize: no
-  step_size_for_samples: 8
+  step_size_for_samples: 4
 
 train_batcher:
   batch: 32
