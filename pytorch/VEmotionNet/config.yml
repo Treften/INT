@@ -34,7 +34,7 @@ preproc:
   scale: 0.007843
   crop_size: 128
   aug:
-    pad: 0
+    pad: 28
     color: BGR
     use_cutout: false
     use_mirroring: true
@@ -44,7 +44,7 @@ preproc:
 
 sampler:
   samples_is_randomize: no
-  step_size_for_samples: 1
+  step_size_for_samples: 8
 
 train_batcher:
   batch: 32
