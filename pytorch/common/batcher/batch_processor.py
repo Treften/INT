@@ -55,7 +55,8 @@ class BatchProcessor4D(AbstractBatchProcessor):
                 arousal.append(batch.data_samples[i * self.depth + j].arousal)
             frame = np.stack(image3D)
             frames.append(np.transpose(frame, (1, 0, 2, 3)))
-            labels.append([np.mean(valence), np.mean(arousal)])
+            #labels.append([np.mean(valence), np.mean(arousal)])
+            labels.extend(zip(valence, arousal))
 
         torchBatch = TorchBatch(frames, labels, use_pin_memory=self.use_pin_memory)
         data = torchBatch.data
