@@ -34,8 +34,8 @@ class TotalLoss(nn.Module):
         loss = logits.new_zeros(())
 
         if "MSE" in self.loss_param:
-            #print("logits:", type(logits), logits.shape, logits.dtype)
-            #print("targets:", type(targets), targets.shape, targets.dtype)
+            print("logits:", type(logits), logits.shape, logits.dtype)
+            print("targets:", type(targets), targets.shape, targets.dtype)
             #print("MSE weight:", type(self.loss_param["MSE"]["w"]), self.loss_param["MSE"]["w"])
             #print("MSE:", self.mse)
             loss = loss + float(self.loss_param["MSE"]["w"]) * self.mse(logits, targets)
