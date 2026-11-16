@@ -130,8 +130,8 @@ class NetTrainer:
             optimizer.zero_grad()
 
             logits = model(data)
-            print("logits:", logits.shape)
-            print("target:", target.shape)
+            #print("logits:", logits.shape)
+            #print("target:", target.shape)
             loss = loss_function(logits, target)
 
             loss.backward()

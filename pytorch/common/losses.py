@@ -32,8 +32,8 @@ class TotalLoss(nn.Module):
     def forward(self, logits, targets, emb=None, emb_norm=None,
                 step=None, summary_writer=None):
         loss = logits.new_zeros(())
-        print("logits:", type(logits), logits.shape, logits.dtype)
-        print("targets:", type(targets), targets.shape, targets.dtype)
+        #print("logits:", type(logits), logits.shape, logits.dtype)
+        #print("targets:", type(targets), targets.shape, targets.dtype)
         if "MSE" in self.loss_param:
             #print("MSE weight:", type(self.loss_param["MSE"]["w"]), self.loss_param["MSE"]["w"])
             #print("MSE:", self.mse)
