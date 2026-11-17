@@ -8,6 +8,7 @@ class TotalLoss(nn.Module):
         self.loss_param = loss_param
         self.mse = nn.MSELoss()
         self.mae = nn.L1Loss()
+        self.huber = nn.HuberLoss()
 
     @staticmethod
     def ccc_loss(logits, targets, eps=1e-8):
@@ -32,16 +33,17 @@ class TotalLoss(nn.Module):
     def forward(self, logits, targets, emb=None, emb_norm=None,
                 step=None, summary_writer=None):
         loss = logits.new_zeros(())
-        #print("logits:", type(logits), logits.shape, logits.dtype)
-        #print("targets:", type(targets), targets.shape, targets.dtype)
+
         if "MSE" in self.loss_param:
-            #print("MSE weight:", type(self.loss_param["MSE"]["w"]), self.loss_param["MSE"]["w"])
-            #print("MSE:", self.mse)
             loss = loss + float(self.loss_param["MSE"]["w"]) * self.mse(logits, targets)
+
         if "MAE" in self.loss_param:
             loss = loss + float(self.loss_param["MAE"]["w"]) * self.mae(logits, targets)
+
+        if "HUBER" in self.loss_param:
+            loss = loss + float(self.loss_param["HUBER"]["w"]) * self.huber(logits, targets)
+
         if "CCC" in self.loss_param:
             loss = loss + self.loss_param["CCC"]["w"] * self.ccc_loss(logits, targets)
 
         return loss
-

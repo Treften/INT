@@ -83,10 +83,9 @@ train:
   experiment_name: EmoV2_step4
 
 losses:
-  MAE:
+  HUBER:
     w: 0.5
-  CCC:
-    w: 0.5
+
 
 
 ini_net:
