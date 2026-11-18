@@ -84,7 +84,7 @@ train:
 
 losses:
   HUBER:
-    w: 0.5
+    w: 1
 
 
 
