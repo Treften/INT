@@ -44,7 +44,7 @@ preproc:
 
 sampler:
   samples_is_randomize: no
-  step_size_for_samples: 4
+  step_size_for_samples: 8
 
 train_batcher:
   batch: 32
@@ -83,7 +83,7 @@ train:
   experiment_name: EmoV2_step4
 
 losses:
-  HUBER:
+  MAE:
     w: 0.5
   CCC:
     w: 0.5
