@@ -1,10 +1,12 @@
 dataset:
   train:
-    data_root: D:\AVER\OMGEmotionChallenge-master\omg_TrainVideos\preproc/frames #D:\AVER\AFEW-VA\crop
-    file_list: D:\AVER\OMGEmotionChallenge-master\omg_TrainVideos\preproc/train_data_with_landmarks.txt
+    server:
+      data_root: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/frames
+      file_list: /content/INT/data/OMGEmotionChallenge/omg_TrainVideos/train_data_with_landmarks.txt
   valid:
-    data_root: D:\AVER\OMGEmotionChallenge-master\omg_ValidVideos\preproc/frames #D:\AVER\AFEW-VA\crop
-    file_list: D:\AVER\OMGEmotionChallenge-master\omg_ValidVideos\preproc/valid_data_with_landmarks.txt #D:\AVER\AFEW-VA\crop/test_data_with_landmarks.txt
+    server:
+      data_root: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/frames
+      file_list: /content/INT/data/OMGEmotionChallenge/omg_ValidVideos/valid_data_with_landmarks.txt
 
 seed: 1234
 
