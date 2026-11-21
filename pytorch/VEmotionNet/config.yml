@@ -28,7 +28,7 @@ preproc:
   data_frame:
     width: 128
     height: 128
-    depth: 16
+    depth: 8
   is_color: true
   mean: 127.5
   scale: 0.007843
