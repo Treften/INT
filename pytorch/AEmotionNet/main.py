@@ -60,7 +60,7 @@ def train():
 
     # read configuration
     with open(args.config) as yml_file:
-        cfg = yaml.load(yml_file)
+        cfg = yaml.safe_load(yml_file)
         params = {
             key: cfg[key]
             for key in cfg
