@@ -21,7 +21,7 @@ net:
   fine_tune: no
 
 parser:
-  max_num_clips: 0
+  max_num_clips: 1000
   max_num_samples: 0
 
 preproc:
