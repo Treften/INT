@@ -8,6 +8,7 @@ from multiprocessing import JoinableQueue
 # local
 from pytorch.common.abstract.abstract_data_batcher import AbstractDataBatcher
 from pytorch.common.batcher.batch_disk_reader import BatchDiskReader
+from queue import Empty
 
 logger = logging.getLogger("root")
 
@@ -104,27 +105,22 @@ class ImagesBatcher(AbstractDataBatcher):
             return None
 
         try:
-            # print(
-            #     f"epoch_finished={self.epoch_is_finished}, "
-            #     f"balance={self.batch_queue_balance}, "
-            #     f"tasks={self.task_queue.qsize()}, "
-            #     f"batches={self.batch_queue.qsize()}",
-            #     flush=True
-            # )
-            #for reader in self.data_readers:
-                # print(
-                #     "reader:", reader.pid,
-                #     "alive:", reader.is_alive(),
-                #     "exitcode:", reader.exitcode,
-                #     flush=True
-                # )
-            batch = self.batch_queue.get(timeout=10)
-        except Exception:
-            # print("BATCH TIMEOUT", flush=True)
-            # print("balance:", self.batch_queue_balance, flush=True)
-            # print("task queue:", self.task_queue.qsize(), flush=True)
-            # print("batch queue:", self.batch_queue.qsize(), flush=True)
+            batch = self.batch_queue.get(timeout=30)
 
+        except Empty:
+            logger.error(
+                "Batch timeout! Outstanding batches: %s",
+                self.batch_queue_balance,
+            )
+
+            for i, reader in enumerate(self.data_readers):
+                logger.error(
+                    "Reader %d: PID=%s, alive=%s, exitcode=%s",
+                    i,
+                    reader.pid,
+                    reader.is_alive(),
+                    reader.exitcode,
+                )
 
             raise
 
