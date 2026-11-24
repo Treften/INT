@@ -28,11 +28,11 @@ class LibrosaAudioProcessor:
         assert not mel is None
         mel_fmax = None if mel["mel_fmax"] == "None" else mel["mel_fmax"]
         self.mel_basis = librosa_mel_fn(
-            self.sampling_rate,
-            sfft["filter_length"],
-            mel["n_mel_channels"],
-            mel["mel_fmin"],
-            mel_fmax,
+            sr=self.sampling_rate,
+            n_fft=sfft["filter_length"],
+            n_mels=mel["n_mel_channels"],
+            fmin=mel["mel_fmin"],
+            fmax=mel_fmax,
         )
         self.inv_mel_basis = np.linalg.pinv(self.mel_basis)
         self.num_channels = mel["n_mel_channels"]
