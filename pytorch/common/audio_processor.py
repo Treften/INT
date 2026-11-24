@@ -47,7 +47,7 @@ class LibrosaAudioProcessor:
         return self.num_channels
 
     def load_wave(self, full_path):
-        return librosa.load(full_path, self.sampling_rate)[0]
+        return librosa.load(full_path, sr=self.sampling_rate)[0]
 
     def load_spec(self, spec):
         return np.load(spec)
