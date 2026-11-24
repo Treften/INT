@@ -79,7 +79,8 @@ losses:
   MSE:
     w: 1.
 
-ini_net: /AlexNet_CombinedMargin_5/AlexNet_CombinedMargin_5_15000.model
+ini_net:
+  server: /content/INT/pytorch/AEmotionNet/AlexNet_CombinedMargin_5/AlexNet_CombinedMargin_5_15000.model
 
 logging:
   log_dir:
