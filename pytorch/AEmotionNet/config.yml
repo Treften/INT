@@ -82,9 +82,12 @@ losses:
 ini_net: /AlexNet_CombinedMargin_5/AlexNet_CombinedMargin_5_15000.model
 
 logging:
-  log_dir: D:/aver_log
-  tb_log_dir: D:/aver_log
-  snapshot_dir: D:/aver_log
+  log_dir:
+    server: /content/aver_log
+  tb_log_dir:
+    server: /content/aver_log
+  snapshot_dir:
+    server: /content/aver_log
 
 test:
   dataset:

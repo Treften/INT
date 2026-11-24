@@ -69,6 +69,7 @@ def train():
         dataset = {key: cfg["dataset"][key][host] for key in cfg["dataset"]}
         log = {key: cfg["logging"][key][host] for key in cfg["logging"]}
         ini_net = cfg["ini_net"][host]
+        step_size_for_samples=params["sampler"]["step_size_for_samples"]
 
     # init logging
     experiment_name = params["train"]["experiment_name"] + str(
@@ -126,13 +127,13 @@ def train():
         data=train_dataset_parser.get_data(),
         num_sample_per_classes=1,
         samples_is_randomize=True,
-        step_size_for_samples=1,
+        step_size_for_samples=step_size_for_samples,
     )
     valid_data_sampler = GroupRandomSampler(
         data=valid_dataset_parser.get_data(),
         num_sample_per_classes=1,
         samples_is_randomize=True,
-        step_size_for_samples=1,
+        step_size_for_samples=step_size_for_samples,
         is_shuffle=False,
     )
 
