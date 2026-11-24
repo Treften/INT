@@ -12,7 +12,7 @@ seed: 1234
 
 net:
   type: STPNet
-  depth: 18
+  depth: 34
   softmax_size: 2
   fine_tune: no
 
@@ -68,9 +68,9 @@ lr_scheduler:
 train:
   cuda_device: 0 #cuda device id
   step_size: 100 #lr scheduler step size
-  step_print: 10
+  step_print: 20
   epoch_size: 50000 #epoch size
-  max_iter: 10000000 #maximum iteration for training
+  max_iter: 1000 #maximum iteration for training
   validate_iter: 100
   snapshot_iter: 10000 #snapshot model frequency
   experiment_name: 'EmoV2_step4' #name for current experiment
