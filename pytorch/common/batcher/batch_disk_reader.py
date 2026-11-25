@@ -28,11 +28,11 @@ class BatchDiskReader(AbstractProcessWorker):
         try:
             out_samples = []
 
-            print(
-                f"[Reader {self.pid}] Input samples: "
-                f"{len(input_batch.data_samples)}",
-                flush=True,
-            )
+            # print(
+            #     f"[Reader {self.pid}] Input samples: "
+            #     f"{len(input_batch.data_samples)}",
+            #     flush=True,
+            # )
 
             for data_sample in input_batch.data_samples:
                 try:
@@ -41,7 +41,7 @@ class BatchDiskReader(AbstractProcessWorker):
                             data_sample.img_rel_path
                         )
                         if image is None:
-                            print("Image is None:", data_sample.img_rel_path, flush=True)
+                            # print("Image is None:", data_sample.img_rel_path, flush=True)
                             continue
                         data_sample.image = image
 
@@ -50,16 +50,16 @@ class BatchDiskReader(AbstractProcessWorker):
                             data_sample.wav_rel_path
                         )
                         if spec is None:
-                            print("Audio is None:", data_sample.wav_rel_path, flush=True)
+                            # print("Audio is None:", data_sample.wav_rel_path, flush=True)
                             continue
 
-                        print(
-                            "Audio:",
-                            data_sample.wav_rel_path,
-                            type(spec),
-                            getattr(spec, "shape", None),
-                            flush=True,
-                        )
+                        # print(
+                        #     "Audio:",
+                        #     data_sample.wav_rel_path,
+                        #     type(spec),
+                        #     getattr(spec, "shape", None),
+                        #     flush=True,
+                        # )
 
                         data_sample.image = spec
 
@@ -67,27 +67,27 @@ class BatchDiskReader(AbstractProcessWorker):
 
                 except Exception:
                     import traceback
-                    print(
-                        "SAMPLE PROCESSING ERROR:",
-                        data_sample.wav_rel_path,
-                        flush=True,
-                    )
+                    # print(
+                    #     "SAMPLE PROCESSING ERROR:",
+                    #     data_sample.wav_rel_path,
+                    #     flush=True,
+                    # )
                     traceback.print_exc()
 
-            print(
-                f"[Reader {self.pid}] Successfully processed: "
-                f"{len(out_samples)}",
-                flush=True,
-            )
+            # print(
+            #     f"[Reader {self.pid}] Successfully processed: "
+            #     f"{len(out_samples)}",
+            #     flush=True,
+            # )
 
-            if self.audio_processor is not None and out_samples:
-                for x in out_samples:
-                    print(
-                        "Padding input:",
-                        type(x.image),
-                        getattr(x.image, "shape", None),
-                        flush=True,
-                    )
+            # if self.audio_processor is not None and out_samples:
+            #     for x in out_samples:
+            #         print(
+            #             "Padding input:",
+            #             type(x.image),
+            #             getattr(x.image, "shape", None),
+            #             flush=True,
+            #         )
 
                 max_len = max(x.image.size(1) for x in out_samples) + 1
                 hspec = out_samples[0].image.size(0)
