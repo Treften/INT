@@ -76,7 +76,7 @@ train:
   experiment_name: 'EmoV2_step4' #name for current experiment
 
 losses:
-  MAE:
+  HUBER:
     w: 1.
 
 ini_net:
