@@ -297,7 +297,7 @@ def train():
         step_print=params["train"]["step_print"],
         accuracy_function=accuracy_fn,
     )
-
+    print("finish")
     # finalize data loader queues
     train_images_batcher.finish()
     valid_images_batcher.finish()
