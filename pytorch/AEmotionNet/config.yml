@@ -12,7 +12,7 @@ seed: 1234
 
 net:
   type: STPNet
-  depth: 50
+  depth: 101
   softmax_size: 2
   fine_tune: no
 

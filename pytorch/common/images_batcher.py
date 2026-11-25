@@ -156,24 +156,24 @@ class ImagesBatcher(AbstractDataBatcher):
         self.fill_task_queue()
 
     def finish(self):
-        #print("finish loader")
+        print("finish loader")
         for data_reader in self.data_readers:
             data_reader.deactivate()
-        #print("tasks")
+        print("tasks")
         while not self.task_queue.empty():
             self.task_queue.get()
             self.task_queue.task_done()
-        #print("alive")
-        #for reader in self.data_readers:
-            # print(
-            #     "PID:", reader.pid,
-            #     "alive:", reader.is_alive(),
-            #     "exitcode:", reader.exitcode,
-            #     flush=True
-            # )
+        print("alive")
+        for reader in self.data_readers:
+            print(
+                "PID:", reader.pid,
+                "alive:", reader.is_alive(),
+                "exitcode:", reader.exitcode,
+                flush=True
+            )
 
-        #print("task queue:", self.task_queue.qsize(), flush=True)
-        #print("batch queue:", self.batch_queue.qsize(), flush=True)
+        print("task queue:", self.task_queue.qsize(), flush=True)
+        print("batch queue:", self.batch_queue.qsize(), flush=True)
         is_anybody_alive = [
             data_reader.is_alive() for data_reader in self.data_readers
         ].count(True) > 0
