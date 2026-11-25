@@ -12,12 +12,12 @@ seed: 1234
 
 net:
   type: STPNet
-  depth: 101
+  depth: 18
   softmax_size: 2
   fine_tune: no
 
 parser:
-  max_num_clips: 1900
+  max_num_clips: 0
   max_num_samples: 1
 
 preproc:
@@ -76,7 +76,7 @@ train:
   experiment_name: 'EmoV2_step4' #name for current experiment
 
 losses:
-  MSE:
+  MAE:
     w: 1.
 
 ini_net:
