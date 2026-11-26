@@ -80,7 +80,7 @@ class BatchDiskReader(AbstractProcessWorker):
             #     flush=True,
             # )
 
-            # if self.audio_processor is not None and out_samples:
+            if self.audio_processor is not None and out_samples:
             #     for x in out_samples:
             #         print(
             #             "Padding input:",
