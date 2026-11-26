@@ -55,8 +55,8 @@ class LibrosaAudioProcessor:
         self.aug_probs = {
             "gain": 0.5,
             "noise": 0.3,
-            "shift": 0.0,
-            "stretch": 0.0,
+            "shift": 0.3,
+            "stretch": 0.3,
             "pitch": 0.0,
         }
 
