@@ -144,6 +144,7 @@ def train():
         max_wave_value=params["preproc"]["audio"]["max_wave_value"],
         sfft=params["preproc"]["audio"]["sfft"],
         mel=params["preproc"]["audio"]["mel"],
+        augment=True,
     )
 
     # create train image batcher
@@ -356,6 +357,7 @@ def test():
         max_wave_value=train_params["preproc"]["audio"]["max_wave_value"],
         sfft=train_params["preproc"]["audio"]["sfft"],
         mel=train_params["preproc"]["audio"]["mel"],
+        augment=False,
     )
 
     test_images_batcher = ImagesBatcher(
