@@ -76,8 +76,10 @@ train:
   experiment_name: 'EmoV2_step4' #name for current experiment
 
 losses:
-  HUBER:
-    w: 1.
+  MSE:
+    w: 0.5
+  CCC:
+    w: 0.5
 
 ini_net:
   server: /content/INT/pytorch/AEmotionNet/AlexNet_CombinedMargin_5/AlexNet_CombinedMargin_5_15000.model
