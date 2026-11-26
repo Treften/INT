@@ -37,7 +37,7 @@ preproc:
     pad: 28
     color: BGR
     use_cutout: false
-    use_mirroring: false
+    use_mirroring: true
     use_random_crop: false
     use_center_crop: false
     use_random_gray: false
