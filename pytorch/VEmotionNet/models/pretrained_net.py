@@ -4,42 +4,92 @@ import torch.nn as nn
 from torchvision.models import resnet18, resnet34, ResNet18_Weights, ResNet34_Weights
 
 
+# class CNN3D(nn.Module):
+#     def __init__(self, in_channels=3, output_size=2):
+#         super().__init__()
+
+#         self.features = nn.Sequential(
+#             nn.Conv3d(in_channels, 32, kernel_size=3, padding=1),
+#             nn.BatchNorm3d(32),
+#             nn.ReLU(inplace=True),
+#             nn.MaxPool3d(kernel_size=(1, 2, 2)),
+
+#             nn.Conv3d(32, 64, kernel_size=3, padding=1),
+#             nn.BatchNorm3d(64),
+#             nn.ReLU(inplace=True),
+#             nn.MaxPool3d(kernel_size=(1, 2, 2)),
+
+#             nn.Conv3d(64, 128, kernel_size=3, padding=1),
+#             nn.BatchNorm3d(128),
+#             nn.ReLU(inplace=True),
+#             nn.MaxPool3d(kernel_size=(1, 2, 2)),
+
+#             nn.Conv3d(128, 128, kernel_size=3, padding=1),
+#             nn.BatchNorm3d(128),
+#             nn.ReLU(inplace=True),
+#         )
+
+#         self.head = nn.Linear(128, output_size)
+        
+#     def forward(self, x):
+#         #print("3D input:", x.shape)
+#         x = self.features(x)
+#         #print("3D features:", x.shape)
+#         x = x.mean(dim=(-1, -2)).transpose(1, 2)
+#         x = self.head(x)
+#         #print("3D output:", x.shape)
+#         return x.reshape(-1, x.shape[-1])
+
+
 class CNN3D(nn.Module):
-    def __init__(self, in_channels=3, output_size=2):
+    def __init__(self, in_channels=3, output_size=2, dropout=0.3):
         super().__init__()
 
         self.features = nn.Sequential(
-            nn.Conv3d(in_channels, 32, kernel_size=3, padding=1),
+            nn.Conv3d(in_channels, 32, (1, 3, 3), padding=(0, 1, 1)),
             nn.BatchNorm3d(32),
             nn.ReLU(inplace=True),
-            nn.MaxPool3d(kernel_size=(1, 2, 2)),
+            nn.Conv3d(32, 32, (3, 1, 1), padding=(1, 0, 0)),
+            nn.BatchNorm3d(32),
+            nn.ReLU(inplace=True),
+            nn.MaxPool3d((1, 2, 2)),
 
-            nn.Conv3d(32, 64, kernel_size=3, padding=1),
+            nn.Conv3d(32, 64, (1, 3, 3), padding=(0, 1, 1)),
             nn.BatchNorm3d(64),
             nn.ReLU(inplace=True),
-            nn.MaxPool3d(kernel_size=(1, 2, 2)),
+            nn.Conv3d(64, 64, (3, 1, 1), padding=(1, 0, 0)),
+            nn.BatchNorm3d(64),
+            nn.ReLU(inplace=True),
+            nn.MaxPool3d((1, 2, 2)),
 
-            nn.Conv3d(64, 128, kernel_size=3, padding=1),
+            nn.Conv3d(64, 128, (1, 3, 3), padding=(0, 1, 1)),
             nn.BatchNorm3d(128),
             nn.ReLU(inplace=True),
-            nn.MaxPool3d(kernel_size=(1, 2, 2)),
-
-            nn.Conv3d(128, 128, kernel_size=3, padding=1),
+            nn.Conv3d(128, 128, (3, 1, 1), padding=(1, 0, 0)),
             nn.BatchNorm3d(128),
             nn.ReLU(inplace=True),
+            nn.MaxPool3d((1, 2, 2)),
+
+            nn.Conv3d(128, 128, (3, 1, 1), padding=(1, 0, 0)),
+            nn.BatchNorm3d(128),
+            nn.ReLU(inplace=True),
+            nn.Dropout3d(dropout),
         )
 
-        self.head = nn.Linear(128, output_size)
-        
-    def forward(self, x):
-        #print("3D input:", x.shape)
-        x = self.features(x)
-        #print("3D features:", x.shape)
-        x = x.mean(dim=(-1, -2)).transpose(1, 2)
-        x = self.head(x)
-        #print("3D output:", x.shape)
-        return x.reshape(-1, x.shape[-1])
+        self.pool = nn.AdaptiveAvgPool3d((4, 1, 1))
 
+        self.head = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(128 * 4, 256),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+            nn.Linear(256, output_size)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = self.pool(x)
+        return self.head(x)
 
 class CNNNet(nn.Module):
     def __init__(self, num_classes, depth, data_size, emb_name=None,
