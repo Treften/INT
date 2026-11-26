@@ -18,7 +18,31 @@ class StatisticsPooling(nn.Module):
         # [B, 2*C]
         return torch.cat([mean, var], dim=1)
 
+class AttentiveStatisticsPooling(nn.Module):
+    def __init__(self, channels, freq_bins=4, hidden=128):
+        super().__init__()
 
+        self.freq_bins = freq_bins
+
+        self.attention = nn.Sequential(
+            nn.Conv1d(channels, hidden, kernel_size=1),
+            nn.Tanh(),
+            nn.Conv1d(hidden, 1, kernel_size=1),
+        )
+
+    def forward(self, x):
+
+        weights = self.attention(x.mean(dim=2))
+        weights = torch.softmax(weights, dim=-1)
+        x = F.adaptive_avg_pool2d(x, (self.freq_bins, x.size(-1)))
+        x = x.flatten(1, 2)
+
+        mean = (x * weights).sum(dim=-1)
+        var = ((x - mean.unsqueeze(-1)).square() * weights).sum(dim=-1)
+        std = torch.sqrt(var.clamp_min(1e-5))
+
+        return torch.cat([mean, std], dim=1)
+    
 class STPNet(nn.Module):
     def __init__(self, num_classes, depth):
         super().__init__()
@@ -65,7 +89,8 @@ class STPNet(nn.Module):
 
         channels = backbone.fc.in_features
 
-        self.pool = StatisticsPooling()
+        #self.pool = StatisticsPooling()
+        self.pool = AttentiveStatisticsPooling()
 
         self.net = nn.Sequential(
             self.features,
