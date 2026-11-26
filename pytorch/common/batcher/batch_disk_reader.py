@@ -88,9 +88,6 @@ class BatchDiskReader(AbstractProcessWorker):
             #             getattr(x.image, "shape", None),
             #             flush=True,
             #         )
-                print("Samples:", len(out_samples))
-                print("Image type:", type(out_samples[0].image))
-                print("Image shape:", out_samples[0].image.shape)
                 max_len = max(x.image.shape[1] for x in out_samples) + 1
                 hspec = out_samples[0].image.size(0)
 

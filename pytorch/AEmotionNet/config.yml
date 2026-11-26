@@ -77,9 +77,8 @@ train:
 
 losses:
   MSE:
-    w: 0.5
-  CCC:
-    w: 0.5
+    w: 1
+
 
 ini_net:
   server: /content/INT/pytorch/AEmotionNet/AlexNet_CombinedMargin_5/AlexNet_CombinedMargin_5_15000.model
