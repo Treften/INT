@@ -19,50 +19,76 @@ class BatchDiskReader(AbstractProcessWorker):
         self.image_processor = image_processor
         self.audio_processor = audio_processor
 
-def do_work_once(self):
-        print("READER WAIT", self.pid, flush=True)
-        #print("READER WAIT", self.pid, flush=True)
+    def do_work_once(self):
         try:
             input_batch = self.in_queue.get(timeout=1)
         except Exception:
             return
-        print(
-        "READER GOT TASK",
-        self.pid,
-        len(input_batch.data_samples),
-        flush=True
-    )
-    #     print(
-    #     "READER GOT TASK",
-    #     self.pid,
-    #     len(input_batch.data_samples),
-    #     flush=True
-    # )
+
         try:
             out_samples = []
+
+            # print(
+            #     f"[Reader {self.pid}] Input samples: "
+            #     f"{len(input_batch.data_samples)}",
+            #     flush=True,
+            # )
 
             for data_sample in input_batch.data_samples:
                 try:
                     if self.image_processor is not None:
-                        image = self.image_processor.process(data_sample.img_rel_path)
+                        image = self.image_processor.process(
+                            data_sample.img_rel_path
+                        )
                         if image is None:
-                            logger.error("Cannot load image: %s", data_sample.img_rel_path)
+                            # print("Image is None:", data_sample.img_rel_path, flush=True)
                             continue
                         data_sample.image = image
 
                     if self.audio_processor is not None:
-                        spec = self.audio_processor.process(data_sample.wav_rel_path)
+                        spec = self.audio_processor.process(
+                            data_sample.wav_rel_path
+                        )
                         if spec is None:
-                            logger.error("Cannot load wav: %s", data_sample.wav_rel_path)
+                            # print("Audio is None:", data_sample.wav_rel_path, flush=True)
                             continue
+
+                        # print(
+                        #     "Audio:",
+                        #     data_sample.wav_rel_path,
+                        #     type(spec),
+                        #     getattr(spec, "shape", None),
+                        #     flush=True,
+                        # )
+
                         data_sample.image = spec
 
                     out_samples.append(data_sample)
 
                 except Exception:
-                    logger.exception("BatchDiskReader: sample processing error")
+                    import traceback
+                    # print(
+                    #     "SAMPLE PROCESSING ERROR:",
+                    #     data_sample.wav_rel_path,
+                    #     flush=True,
+                    # )
+                    traceback.print_exc()
 
-            if self.audio_processor is not None and out_samples:
+            # print(
+            #     f"[Reader {self.pid}] Successfully processed: "
+            #     f"{len(out_samples)}",
+            #     flush=True,
+            # )
+
+            # if self.audio_processor is not None and out_samples:
+            #     for x in out_samples:
+            #         print(
+            #             "Padding input:",
+            #             type(x.image),
+            #             getattr(x.image, "shape", None),
+            #             flush=True,
+            #         )
+
                 max_len = max(x.image.size(1) for x in out_samples) + 1
                 hspec = out_samples[0].image.size(0)
 
@@ -70,14 +96,18 @@ def do_work_once(self):
                     spec_padded = torch.zeros(hspec, max_len)
                     spec_padded[:, :x.image.size(1)] = x.image
                     x.image = spec_padded
-            print("READER PUT", self.pid, flush=True)
-            #print("READER PUT", self.pid, flush=True)
+
+            if not out_samples:
+                raise RuntimeError(
+                    "All samples in input batch failed processing"
+                )
+
             self.out_queue.put(Batch(out_samples))
-            print("READER PUT DONE", self.pid, flush=True)
-            #print("READER PUT DONE", self.pid, flush=True)
 
         except Exception:
-            logger.exception("BatchDiskReader: batch processing error")
+            import traceback
+            print("BATCH PROCESSING ERROR:", flush=True)
+            traceback.print_exc()
             self.out_queue.put(Batch([]))
 
         finally:

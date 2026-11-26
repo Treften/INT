@@ -36,11 +36,11 @@ preproc:
   aug:
     pad: 28
     color: BGR
-    use_cutout: false
-    use_mirroring: false
-    use_random_crop: false
+    use_cutout: true
+    use_mirroring: true
+    use_random_crop: true
     use_center_crop: false
-    use_random_gray: false
+    use_random_gray: true
 
 sampler:
   samples_is_randomize: no
@@ -77,8 +77,8 @@ train:
   step_size: 100
   step_print: 100
   epoch_size: 50000
-  max_iter: 2500
-  validate_iter: 500
+  max_iter: 5000
+  validate_iter: 1000
   snapshot_iter: 5000
   experiment_name: EmoV2_step4
 
