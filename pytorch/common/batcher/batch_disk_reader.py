@@ -89,7 +89,7 @@ class BatchDiskReader(AbstractProcessWorker):
             #             flush=True,
             #         )
 
-                max_len = max(x.image.shape[1] for x in out_samples) + 1
+                max_len = max(x.image.size(1) for x in out_samples) + 1
                 hspec = out_samples[0].image.size(0)
 
                 for x in out_samples:
