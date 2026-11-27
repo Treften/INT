@@ -121,7 +121,7 @@ def calc_features(data, draw: bool = False):
             for j in range(len(sample.landmarks)):
                 lm = sample.landmarks[j]
                 nose_dist.append(np.sqrt((lm_ref[0] - lm[0]) ** 2 + (lm_ref[1] - lm[1]) ** 2))
-            #feat.append(nose_dist)
+            feat.append(nose_dist)
             targets.append(sample.labels)
 
             face_width = np.linalg.norm(landmarks[0] - landmarks[16])
@@ -169,7 +169,7 @@ def calc_features(data, draw: bool = False):
                 geometry,
             ])
 
-            feat.append(features)
+            #feat.append(features)
             if draw:
                 img = cv2.cv.LoadImage(sample.img_rel_path)
                 for lm in sample.landmarks:
