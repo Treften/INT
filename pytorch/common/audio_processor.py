@@ -99,7 +99,6 @@ class LibrosaAudioProcessor:
         return np.random.random() < self.aug_probs[name]
 
     def _fit_length(self, wave, target_length):
-        """Random crop or zero-pad to preserve original duration."""
 
         if len(wave) > target_length:
             start = np.random.randint(0, len(wave) - target_length + 1)
@@ -114,35 +113,26 @@ class LibrosaAudioProcessor:
         return wave
 
     def augment_wave(self, wave):
-        """Waveform-level augmentations."""
 
         wave = np.asarray(wave, dtype=np.float32).copy()
-
         if len(wave) == 0:
             return wave
 
         original_length = len(wave)
 
-        # Random Gain.
         if self._apply("gain"):
             gain = np.random.uniform(*self.gain_db)
             wave *= 10 ** (gain / 20)
 
-        # Gaussian Noise with random SNR.
         if self._apply("noise"):
             rms = np.sqrt(np.mean(wave ** 2))
 
             if rms > 1e-8:
                 snr = np.random.uniform(*self.noise_snr_db)
                 noise_rms = rms / (10 ** (snr / 20))
-
-                noise = np.random.normal(
-                    0, noise_rms, size=wave.shape
-                ).astype(np.float32)
-
+                noise = np.random.normal(0, noise_rms, size=wave.shape).astype(np.float32)
                 wave += noise
 
-        # Random Time Shift without circular wrapping.
         if self._apply("shift"):
             max_shift = min(
                 int(self.sampling_rate * self.max_shift_sec),
@@ -151,7 +141,6 @@ class LibrosaAudioProcessor:
 
             if max_shift > 0:
                 shift = np.random.randint(-max_shift, max_shift + 1)
-
                 shifted = np.zeros_like(wave)
 
                 if shift > 0:
@@ -163,10 +152,8 @@ class LibrosaAudioProcessor:
 
                 wave = shifted
 
-        # Time Stretch.
         if self._apply("stretch"):
             rate = np.random.uniform(*self.time_stretch_range)
-
             wave = librosa.effects.time_stretch(
                 y=wave,
                 rate=rate,
@@ -174,10 +161,8 @@ class LibrosaAudioProcessor:
 
             wave = self._fit_length(wave, original_length)
 
-        # Pitch Shift.
         if self._apply("pitch"):
             steps = np.random.uniform(*self.pitch_shift_range)
-
             wave = librosa.effects.pitch_shift(
                 y=wave,
                 sr=self.sampling_rate,

@@ -131,7 +131,7 @@ def calc_features(data):
                         perimeter,
                         area / (perimeter ** 2 + 1e-8),
                     ], dtype=np.float32),
-                    geometry_features(p),
+                    #geometry_features(p),
                 ])
 
                 delta = (
@@ -144,7 +144,8 @@ def calc_features(data):
                     delta.flatten(),
                     np.abs(delta).mean(axis=0),
                 ])
-                feature = temporal
+                #feature = temporal
+                feature = base
                 #feature = np.concatenate([base, temporal])
 
                 if not np.isfinite(feature).all():
@@ -382,5 +383,5 @@ if __name__ == "__main__":
             )
 
     # run classifiers
-    #classification( train_feat, test_feat, train_targets, test_targets, accuracy_fn=accuracy_fn, pca_dim=0)
-    regression(train_clip_feat, test_clip_feat, train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
+    classification( train_feat, test_feat, train_targets, test_targets, accuracy_fn=accuracy_fn, pca_dim=0)
+    #regression(train_clip_feat, test_clip_feat, train_va_targets, test_va_targets,accuracy_fn=accuracy_va)
