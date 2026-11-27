@@ -57,7 +57,7 @@ class LibrosaAudioProcessor:
             "noise": 0.3,
             "shift": 0.3,
             "stretch": 0.3,
-            "pitch": 0.0,
+            "pitch": 0.2,
         }
 
         if aug_probs is not None:
