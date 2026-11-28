@@ -121,7 +121,7 @@ def calc_features(data, draw: bool = False):
             for j in range(len(sample.landmarks)):
                 lm = sample.landmarks[j]
                 nose_dist.append(np.sqrt((lm_ref[0] - lm[0]) ** 2 + (lm_ref[1] - lm[1]) ** 2))
-            feat.append(nose_dist)
+            #feat.append(nose_dist)
             targets.append(sample.labels)
 
             face_width = np.linalg.norm(landmarks[0] - landmarks[16])
@@ -166,10 +166,10 @@ def calc_features(data, draw: bool = False):
 
             features = np.concatenate([
                 features.flatten(),
-                geometry,
+                #geometry,
             ])
 
-            #feat.append(features)
+            feat.append(features)
             if draw:
                 img = cv2.cv.LoadImage(sample.img_rel_path)
                 for lm in sample.landmarks:
@@ -184,7 +184,6 @@ def calc_features(data, draw: bool = False):
 
 def draw_comparison(pca_points, tsne_points, targets):
     fig, axes = plt.subplots(1, 2, figsize=(16, 7))
-
     vmin, vmax = np.min(targets), np.max(targets)
 
     for ax, points, name in zip(
@@ -204,8 +203,8 @@ def draw_comparison(pca_points, tsne_points, targets):
         )
 
         ax.set_title(name + " visualization")
-        ax.set_xlabel(name + " 1")
-        ax.set_ylabel(name + " 2")
+        ax.set_xlabel(name)
+        ax.set_ylabel(name)
 
     fig.colorbar(scatter, ax=axes, label="Target label", shrink=0.85)
 
