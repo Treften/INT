@@ -182,24 +182,36 @@ def calc_features(data, draw: bool = False):
 
 
 
-def draw(points2D, targets, name, sawe=True):
-    fig, ax = plt.subplots(figsize=(10, 8))
+def draw_comparison(pca_points, tsne_points, targets):
+    fig, axes = plt.subplots(1, 2, figsize=(16, 7))
 
-    scatter = ax.scatter(
-        points2D[:, 0],
-        points2D[:, 1],
-        c=targets,
-        cmap="viridis",
-        s=12,
-        alpha=0.7
-    )
+    vmin, vmax = np.min(targets), np.max(targets)
 
-    ax.set_title(name + " visualization")
-    ax.set_xlabel(name + " 1")
-    ax.set_ylabel(name +" 2")
-    fig.colorbar(scatter, ax=ax, label="Target label")
+    for ax, points, name in zip(
+        axes,
+        [pca_points, tsne_points],
+        ["PCA", "t-SNE"]
+    ):
+        scatter = ax.scatter(
+            points[:, 0],
+            points[:, 1],
+            c=targets,
+            cmap="viridis",
+            vmin=vmin,
+            vmax=vmax,
+            s=12,
+            alpha=0.7
+        )
 
-    output_path = Path("/content/INT/"+name+".png")
+        ax.set_title(name + " visualization")
+        ax.set_xlabel(name + " 1")
+        ax.set_ylabel(name + " 2")
+
+    fig.colorbar(scatter, ax=axes, label="Target label", shrink=0.85)
+
+    output_path = Path("/content/INT/PCA_t-SNE.png")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
     fig.savefig(output_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
 
@@ -231,12 +243,11 @@ def run_tsne(feat, targets, pca_dim=50, tsne_dim=2):
     model = torchTSNE(n_points=feat.shape[0], n_dim=tsne_dim)
     print("wrapper")
     w = Wrapper(model, cuda=True, batchsize=feat.shape[0], epochs=5)
-    for itr in range(20):
+    for itr in range(10):
         w.fit(pij, i, j, offset=itr)
         # Visualize the results
     tsne_result = model.logits.weight.cpu().data.numpy()
-    draw(pca_result, targets, "PCA")
-    draw(tsne_result, targets, "t-SNE")
+    draw_comparison(pca_result, tsne_result, targets)
     compare_class_separation(pca_result, targets, "PCA")
     compare_class_separation(tsne_result, targets, "t-SNE")
 
